@@ -1,4 +1,6 @@
-const {validationResult} = require('express-validator/check');
+const {
+  validationResult
+} = require('express-validator/check');
 const fetch = require('node-fetch');
 const secret = require('secret');
 const Flight = require('../models/Flight');
@@ -32,7 +34,11 @@ function encodeQueryString(params) {
 }
 
 function getProps(req) {
-  return Object.assign(req.body, { app_id: secret.get('app_id') }, { app_key: secret.get('app_key') });
+  return Object.assign(req.body, {
+    app_id: secret.get('app_id')
+  }, {
+    app_key: secret.get('app_key')
+  });
 }
 
 const barcodeNum = function randomRange() {
@@ -40,28 +46,33 @@ const barcodeNum = function randomRange() {
 }
 
 module.exports = {
-  getFlights: (req, res) => {
+  getFlights: (req, res, next) => {   
     fetch(`${baseURL}/flights${encodeQueryString(getProps(req))}`, {
         headers: {
           "ResourceVersion": "v3"
         }
       })
-      .then((data) => data.json())
-      .then((flighs) => {
+      .then((data) => data.json().then((parsed) => ({parsed, link: data.headers.get('link')})))
+      .then((flighs, link) => {
         res
           .status(200)
           .json({
             message: 'Fetched flights successfully.',
-            flighs
+            flighs: flighs.parsed,
+            link: flighs.link.split(',').map((acc,curr) => ({
+              [acc.split('; ')[1].replace('rel="', '').replace('"', '')]: acc.split('; ')[0].replace('<', '').replace('>', '')
+            }), {})
           });
       })
       .catch((error) => {
         if (!error.statusCode) {
           error.statusCode = 500;
         }
+
+        next(error);
       });
   },
-  getFlightById: (req, res) => {
+  getFlightById: (req, res, next) => {
     const flightId = req.params.flightId;
 
     fetch(`${baseURL}/flights/${flightId}${encodeQueryString(getProps(req))}`, {
@@ -82,24 +93,31 @@ module.exports = {
         if (!error.statusCode) {
           error.statusCode = 500;
         }
+
+        next(error);
       });
-    },
-  createTicket: async (req, res) => {
+  },
+  createTicket: async (req, res, next) => {
     // Validate post using express-validator
     // Return 422 with errors array if something went wrong
     if (validatePost(req, res)) {
-      const { flightId, userId, price } = req.body;
-      debugger
+      const {
+        flightId,
+        userId,
+        price
+      } = req.body;
+
       // Create the ticket in DB and return 201 status code with a message and the ticket itself with the user
       try {
         const user = await User.findById(userId);
-              
-        const flightDetails = await 
-          fetch(`${baseURL}/flights/${flightId}${encodeQueryString(getProps(req))}`, {
+
+        const flightDetails = await
+        fetch(`${baseURL}/flights/${flightId}${encodeQueryString(getProps(req))}`, {
             headers: {
               "ResourceVersion": "v3"
-            }})
-            .then((data) => data.json());
+            }
+          })
+          .then((data) => data.json());
 
         const flight = new Flight({
           id: flightDetails.id
@@ -130,46 +148,47 @@ module.exports = {
               full_name: user.full_name
             }
           });
-        } catch (error) {
-          if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      
+      } catch (error) {
+        if (!error.statusCode) {
+          error.statusCode = 500;
+        }
+
+        next(error);
       }
     }
-      // const post = new Post({
-      //   title,
-      //   content,
-      //   creator: req.userId
-      // });
-      // let creator;
+    // const post = new Post({
+    //   title,
+    //   content,
+    //   creator: req.userId
+    // });
+    // let creator;
 
-      // post.save()
-      //   .then(() => {
-      //     return User.findById(req.userId);
-      //   })
-      //   .then((user) => {
-      //     user.posts.push(post);
-      //     creator = user;
-      //     return user.save();
-      //   })
-      //   .then(() => {
-      //     res
-      //       .status(201)
-      //       .json({
-      //         message: 'Post created successfully!',
-      //         post: post,
-      //         creator: {
-      //           userId: req.userId,
-      //           name: creator.name
-      //         }
-      //       })
-      //   })
-      //   .catch((error) => {
-      //     if (!error.statusCode) {
-      //       error.statusCode = 500;
-      //     }
-      //   });
+    // post.save()
+    //   .then(() => {
+    //     return User.findById(req.userId);
+    //   })
+    //   .then((user) => {
+    //     user.posts.push(post);
+    //     creator = user;
+    //     return user.save();
+    //   })
+    //   .then(() => {
+    //     res
+    //       .status(201)
+    //       .json({
+    //         message: 'Post created successfully!',
+    //         post: post,
+    //         creator: {
+    //           userId: req.userId,
+    //           name: creator.name
+    //         }
+    //       })
+    //   })
+    //   .catch((error) => {
+    //     if (!error.statusCode) {
+    //       error.statusCode = 500;
+    //     }
+    //   });
   },
   deletePost: (req, res, next) => {
     const postId = req.params.postId;

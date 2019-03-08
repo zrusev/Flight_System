@@ -6,7 +6,7 @@ module.exports = () => {
     const data = fs.readFileSync(path.resolve(__dirname, '../secrets/keys.json'), 'utf8');
     const parsedData = JSON.parse(data);
 
-    secret.set('connString', parsedData.localConnString);
+    secret.set('connString', parsedData.externalConnString);
     secret.set('hashSecret', parsedData.hashSecret);
     
     secret.set('app_id', parsedData.app_id);
