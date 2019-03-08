@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator/check');
 const fetch = require('node-fetch');
+const secret = require('secret');
 const Post = require('../models/Post');
 const User = require('../models/User');
 
@@ -21,28 +22,35 @@ function validatePost(req, res) {
 
 function encodeQueryString(params) {
   const keys = Object.keys(params)
-  return keys.length
-      ? "?" + keys
-          .map(key => encodeURIComponent(key)
-              + "=" + encodeURIComponent(params[key]))
-          .join("&")
-      : ""
+  return keys.length ?
+    "?" + keys
+    .map(key => encodeURIComponent(key) +
+      "=" + encodeURIComponent(params[key]))
+    .join("&") :
+    ""
+}
+
+function getProps(req) {
+  return Object.assign(req.body, {
+    app_id: secret.get('app_id')
+  }, {
+    app_key: secret.get('app_key')
+  });
 }
 
 module.exports = {
-  getFlights: (req, res) => {    
-    req.body["app_id"] = "";
-    req.body["app_key"] = "";
-
-    fetch(`${baseURL}/flights${encodeQueryString(req.body)}`, {
-        headers: { "ResourceVersion": "v3" }
+  getFlights: (req, res) => {
+    fetch(`${baseURL}/flights${encodeQueryString(getProps(req))}`, {
+        headers: {
+          "ResourceVersion": "v3"
+        }
       })
       .then((data) => data.json())
       .then((flighs) => {
         res
           .status(200)
           .json({
-            message: 'Fetched posts successfully.',
+            message: 'Fetched flights successfully.',
             flighs
           });
       })
@@ -50,27 +58,24 @@ module.exports = {
         if (!error.statusCode) {
           error.statusCode = 500;
         }
-
-        next(error);
       });
   },
-  getPosts: (req, res) => {
-    // Retrieve all posts in JSON format
-    Post.find()
-      .then((posts) => {
+  getFlightById: (req, res) => {
+    const postId = req.params.postId;
+//TBE
+    Post.findById(postId)
+      .then((post) => {
         res
           .status(200)
           .json({
-            message: 'Fetched posts successfully.',
-            posts
-          });
+            message: 'Post fetched.',
+            post
+          })
       })
       .catch((error) => {
         if (!error.statusCode) {
           error.statusCode = 500;
         }
-
-        next(error);
       });
   },
   createPost: (req, res) => {
@@ -115,8 +120,6 @@ module.exports = {
           if (!error.statusCode) {
             error.statusCode = 500;
           }
-
-          next(error);
         });
     }
   },
@@ -156,28 +159,6 @@ module.exports = {
         if (!error.statusCode) {
           error.statusCode = 500;
         }
-
-        next(error);
-      });
-  },
-  getPostById: (req, res) => {
-    const postId = req.params.postId;
-
-    Post.findById(postId)
-      .then((post) => {
-        res
-          .status(200)
-          .json({
-            message: 'Post fetched.',
-            post
-          })
-      })
-      .catch((error) => {
-        if (!error.statusCode) {
-          error.statusCode = 500;
-        }
-
-        next(error);
       });
   },
   updatePost: (req, res) => {
@@ -218,8 +199,6 @@ module.exports = {
           if (!error.statusCode) {
             error.statusCode = 500;
           }
-
-          next(error);
         });
     }
   }

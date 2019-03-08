@@ -4,7 +4,7 @@ const feedController = require('../controllers/feed');
 const isAuth = require('../middleware/is-auth');
 
 router.get('/flights', feedController.getFlights);
-router.get('/posts', isAuth, feedController.getPosts);
+router.get('/post/:postId', isAuth ,feedController.getFlightById);
 router.post('/post/create', isAuth , [
   body('title')
     .trim()
@@ -14,7 +14,6 @@ router.post('/post/create', isAuth , [
     .isLength({ min: 5 })
 ], feedController.createPost);
 router.delete('/post/delete/:postId', isAuth ,feedController.deletePost);
-router.get('/post/:postId', isAuth ,feedController.getPostById);
 router.put('/post/update/:postId', isAuth ,feedController.updatePost);
 
 module.exports = router;
