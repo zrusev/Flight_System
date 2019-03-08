@@ -1,7 +1,8 @@
 const {validationResult} = require('express-validator/check');
 const fetch = require('node-fetch');
 const secret = require('secret');
-const Post = require('../models/Post');
+const Flight = require('../models/Flight');
+const Ticket = require('../models/Ticket');
 const User = require('../models/User');
 
 const baseURL = 'https://api.schiphol.nl/public-flights';
@@ -34,6 +35,10 @@ function getProps(req) {
   return Object.assign(req.body, { app_id: secret.get('app_id') }, { app_key: secret.get('app_key') });
 }
 
+const barcodeNum = function randomRange() {
+  return ~~(Math.random() * (1000000 - 1 + 1)) + 1
+}
+
 module.exports = {
   getFlights: (req, res) => {
     fetch(`${baseURL}/flights${encodeQueryString(getProps(req))}`, {
@@ -54,24 +59,23 @@ module.exports = {
         if (!error.statusCode) {
           error.statusCode = 500;
         }
-
-        next(error);
       });
   },
   getFlightById: (req, res) => {
     const flightId = req.params.flightId;
+
     fetch(`${baseURL}/flights/${flightId}${encodeQueryString(getProps(req))}`, {
         headers: {
           "ResourceVersion": "v3"
         }
       })
       .then((data) => data.json())
-      .then((flighs) => {
+      .then((fligh) => {
         res
           .status(200)
           .json({
-            message: 'Fetched flights successfully.',
-            flighs
+            message: 'Fetched flight successfully.',
+            fligh
           });
       })
       .catch((error) => {
@@ -79,51 +83,93 @@ module.exports = {
           error.statusCode = 500;
         }
       });
-  },
-  createPost: (req, res) => {
+    },
+  createTicket: async (req, res) => {
     // Validate post using express-validator
     // Return 422 with errors array if something went wrong
     if (validatePost(req, res)) {
-      const {
-        title,
-        content
-      } = req.body;
+      const { flightId, userId, price } = req.body;
+      debugger
+      // Create the ticket in DB and return 201 status code with a message and the ticket itself with the user
+      try {
+        const user = await User.findById(userId);
+              
+        const flightDetails = await 
+          fetch(`${baseURL}/flights/${flightId}${encodeQueryString(getProps(req))}`, {
+            headers: {
+              "ResourceVersion": "v3"
+            }})
+            .then((data) => data.json());
 
-      // Create the post in DB and return 201 status code with a message and the post itself with the creator
-      const post = new Post({
-        title,
-        content,
-        creator: req.userId
-      });
-      let creator;
+        const flight = new Flight({
+          id: flightDetails.id
+        })
 
-      post.save()
-        .then(() => {
-          return User.findById(req.userId);
-        })
-        .then((user) => {
-          user.posts.push(post);
-          creator = user;
-          return user.save();
-        })
-        .then(() => {
-          res
-            .status(201)
-            .json({
-              message: 'Post created successfully!',
-              post: post,
-              creator: {
-                userId: req.userId,
-                name: creator.name
-              }
-            })
-        })
-        .catch((error) => {
-          if (!error.statusCode) {
-            error.statusCode = 500;
-          }
+        const barcode = barcodeNum();
+
+        const ticket = new Ticket({
+          flight,
+          user,
+          price,
+          barcode
         });
+
+        await ticket.save();
+
+        user.flights.push(flight);
+        user.tickets.push(ticket);
+        await user.save();
+
+        res
+          .status(201)
+          .json({
+            message: 'Ticket created successfully!',
+            ticket: ticket,
+            user: {
+              userId: userId,
+              full_name: user.full_name
+            }
+          });
+        } catch (error) {
+          if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      
+      }
     }
+      // const post = new Post({
+      //   title,
+      //   content,
+      //   creator: req.userId
+      // });
+      // let creator;
+
+      // post.save()
+      //   .then(() => {
+      //     return User.findById(req.userId);
+      //   })
+      //   .then((user) => {
+      //     user.posts.push(post);
+      //     creator = user;
+      //     return user.save();
+      //   })
+      //   .then(() => {
+      //     res
+      //       .status(201)
+      //       .json({
+      //         message: 'Post created successfully!',
+      //         post: post,
+      //         creator: {
+      //           userId: req.userId,
+      //           name: creator.name
+      //         }
+      //       })
+      //   })
+      //   .catch((error) => {
+      //     if (!error.statusCode) {
+      //       error.statusCode = 500;
+      //     }
+      //   });
   },
   deletePost: (req, res, next) => {
     const postId = req.params.postId;

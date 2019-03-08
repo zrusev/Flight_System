@@ -6,15 +6,9 @@ const isAuth = require('../middleware/is-auth');
 router.get('/flights', feedController.getFlights);
 router.get('/flights/:flightId', feedController.getFlightById);
 
-router.post('/post/create', isAuth , [
-  body('title')
-    .trim()
-    .isLength({ min: 5 }),
-  body('content')
-    .trim()
-    .isLength({ min: 5 })
-], feedController.createPost);
-router.delete('/post/delete/:postId', isAuth ,feedController.deletePost);
-router.put('/post/update/:postId', isAuth ,feedController.updatePost);
+router.post('/tickets/create', isAuth, feedController.createTicket);
+
+// router.delete('/post/delete/:postId', isAuth ,feedController.deletePost);
+// router.put('/post/update/:postId', isAuth ,feedController.updatePost);
 
 module.exports = router;

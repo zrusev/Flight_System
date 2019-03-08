@@ -3,33 +3,9 @@ const Schema = mongoose.Schema;
 
 const flightSchema = new Schema({
     id: {
-        type: string
-    },
-    users: [
-        { type: Schema.Types.ObjectId, ref: 'User' }
-    ]
-    // flightName: {
-    //     type: String
-    // },
-    // flightDirection: {
-    //     type: String,
-    //     enum: ['A', 'D']
-    // },
-    // flightNumber: {
-    //     type: integer
-    // },
-    // gate: {
-    //     type: String
-    // },
-    // scheduleDate: {
-    //     type: String
-    // },
-    // scheduleTime: {
-    //     type: String
-    // },
-    // terminal: {
-    //     type: integer
-    // }
+        type: Schema.Types.String, 
+        required: true
+    }
 });
 
 module.exports = mongoose.model('Flight', flightSchema);

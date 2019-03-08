@@ -26,7 +26,12 @@ const userSchema = new Schema({
     required: true
   }],
   flights: [
-    { type: Schema.Types.ObjectId, ref: 'Flight' }
+    { type: Schema.Types.ObjectId, 
+      ref: 'Flight' }
+  ],
+  tickets: [
+    { type: Schema.Types.ObjectId, 
+      ref: 'Ticket' }
   ]
 });
 
