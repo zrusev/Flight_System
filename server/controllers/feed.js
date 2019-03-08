@@ -1,4 +1,4 @@
-const { validationResult } = require('express-validator/check');
+const {validationResult} = require('express-validator/check');
 const fetch = require('node-fetch');
 const secret = require('secret');
 const Post = require('../models/Post');
@@ -31,11 +31,7 @@ function encodeQueryString(params) {
 }
 
 function getProps(req) {
-  return Object.assign(req.body, {
-    app_id: secret.get('app_id')
-  }, {
-    app_key: secret.get('app_key')
-  });
+  return Object.assign(req.body, { app_id: secret.get('app_id') }, { app_key: secret.get('app_key') });
 }
 
 module.exports = {
@@ -58,19 +54,25 @@ module.exports = {
         if (!error.statusCode) {
           error.statusCode = 500;
         }
+
+        next(error);
       });
   },
   getFlightById: (req, res) => {
-    const postId = req.params.postId;
-//TBE
-    Post.findById(postId)
-      .then((post) => {
+    const flightId = req.params.flightId;
+    fetch(`${baseURL}/flights/${flightId}${encodeQueryString(getProps(req))}`, {
+        headers: {
+          "ResourceVersion": "v3"
+        }
+      })
+      .then((data) => data.json())
+      .then((flighs) => {
         res
           .status(200)
           .json({
-            message: 'Post fetched.',
-            post
-          })
+            message: 'Fetched flights successfully.',
+            flighs
+          });
       })
       .catch((error) => {
         if (!error.statusCode) {

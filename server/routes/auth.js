@@ -20,7 +20,7 @@ router.post('/signup',
       .trim()
       .isLength({ min: 5 })
       .withMessage('Please enter a valid password.'),
-    body('name')
+    body('full_name')
       .trim()
       .not()
       .isEmpty()

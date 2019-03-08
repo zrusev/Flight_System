@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const secret = require('secret');
 
 module.exports = (req, res, next) => {
   const authHeaders = req.get('Authorization');
@@ -9,8 +10,8 @@ module.exports = (req, res, next) => {
 
   const token = req.get('Authorization').split(' ')[1];
   let decodedToken;
-  try {
-    decodedToken = jwt.verify(token, 'somesupersecret')
+  try {    
+    decodedToken = jwt.verify(token, secret.get('hashSecret'))
   } catch(error) {
     return res.status(401)
       .json({ message: 'Token is invalid.', error });

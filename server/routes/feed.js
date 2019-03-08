@@ -4,7 +4,8 @@ const feedController = require('../controllers/feed');
 const isAuth = require('../middleware/is-auth');
 
 router.get('/flights', feedController.getFlights);
-router.get('/post/:postId', isAuth ,feedController.getFlightById);
+router.get('/flights/:flightId', feedController.getFlightById);
+
 router.post('/post/create', isAuth , [
   body('title')
     .trim()

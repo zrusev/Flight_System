@@ -1,16 +1,26 @@
 const mongoose = require('mongoose');
+const secret = require('secret');
+const User = require('../models/User');
+
 mongoose.Promise = global.Promise;
 module.exports = () => {
-    mongoose.connect('mongodb://localhost:27017/flight-system-db', {
+    const connStr = secret.get('connString');
+
+    mongoose.connect(connStr, {
         useNewUrlParser: true
-    });       
+    });
     const db = mongoose.connection;
     db.once('open', err => {
         if (err) {
             console.log(err);
-        } 
+        }
 
-        console.log('Database ready');
+        User.seedAdminUser().then(() => {
+            console.log('Database ready');
+        }).catch((reason) => {
+            console.log('Something went wrong');
+            console.log(reason);
+        });
     });
 
     db.on('error', reason => {
