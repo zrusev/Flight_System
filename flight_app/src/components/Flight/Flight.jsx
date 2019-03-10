@@ -1,24 +1,43 @@
 import React, { Component } from 'react';
-import { Card } from 'react-bootstrap';
+import { Table, Pagination } from 'react-bootstrap';
+import FlightDetails from '../Flight/FlightDetails';
 
-class Flight extends Component {
+class Flight extends Component {    
     render() {
-        const { _id, time, to, flight, terminal, status } = this.props.details;
-        
+        const { flights } = this.props; 
+        let active = 2;
+        let items = [];
+        for (let number = 1; number <= 5; number++) {
+        items.push(
+            <Pagination.Item key={number} active={number === active}>
+            {number}
+            </Pagination.Item>,
+            )
+        }
+
         return (
             <>
-              <Card id={`card-id-${_id}`} style={{ width: '18rem' }}>
-              <Card.Body>
-                  <Card.Title>{flight}</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">To: {to}</Card.Subtitle>
-                  <Card.Text>
-                      {time} {terminal} {status}
-                  </Card.Text>
-                  <Card.Link href="#">Card Link</Card.Link>
-                  <Card.Link href="#">Another Link</Card.Link>
-              </Card.Body>
-              </Card>
-            </>
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>TIME</th>
+                        <th>TO</th>
+                        <th>FLIGHT</th>
+                        <th>TERMINAL</th>
+                        <th>STATUS</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        flights.map(fl => (
+                            <FlightDetails key={fl.id} details={fl} />
+                        ))
+                    }
+                </tbody>
+            </Table>
+            <Pagination>{items}</Pagination>
+            </>        
         )
     }
 }

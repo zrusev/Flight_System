@@ -1,6 +1,4 @@
-const {
-  validationResult
-} = require('express-validator/check');
+const { validationResult } = require('express-validator/check');
 const fetch = require('node-fetch');
 const secret = require('secret');
 const Flight = require('../models/Flight');
@@ -34,7 +32,12 @@ function encodeQueryString(params) {
 }
 
 function getProps(req) {
-  return Object.assign(req.body, {
+  return Object.assign({
+    "flightdirection": "D",
+    "page": "0",
+    "sort": "scheduletime",
+    "includedelays": "false"
+  }, {
     app_id: secret.get('app_id')
   }, {
     app_key: secret.get('app_key')
@@ -46,20 +49,23 @@ const barcodeNum = function randomRange() {
 }
 
 module.exports = {
-  getFlights: (req, res, next) => {   
+  getFlights: (req, res, next) => {
     fetch(`${baseURL}/flights${encodeQueryString(getProps(req))}`, {
         headers: {
           "ResourceVersion": "v3"
         }
       })
-      .then((data) => data.json().then((parsed) => ({parsed, link: data.headers.get('link')})))
-      .then((flighs, link) => {
+      .then((data) => data.json().then((parsed) => ({
+        parsed,
+        link: data.headers.get('link')
+      })))
+      .then((flights, link) => {
         res
           .status(200)
           .json({
             message: 'Fetched flights successfully.',
-            flighs: flighs.parsed,
-            link: flighs.link.split(',').map((acc,curr) => ({
+            flights: flights.parsed,
+            link: flights.link.split(',').map((acc, curr) => ({
               [acc.split('; ')[1].replace('rel="', '').replace('"', '')]: acc.split('; ')[0].replace('<', '').replace('>', '')
             }), {})
           });

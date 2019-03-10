@@ -5,7 +5,7 @@ const authRoutes = require('./routes/auth');
 
 require('./util/reader')();
 require('./database/database')();
-const port = 3000;
+const port = 9999;
 const app = express();
 
 app.use(bodyParser.json());

@@ -2,18 +2,17 @@ import React, { Component } from 'react';
 
 class FlightDetails extends Component {
     render() {
-        const { time, to, flight, terminal, status } = this.props.details;
+        const { scheduleTime, flightName, terminal, route, publicFlightState } = this.props.details;
         
         return (
-            <>
-                <div>                  
-                  {flight}
-                  <br />
-                  To: {to}
-                  <br />
-                  {time} {terminal} {status}
-                </div>
-            </>
+            <tr>
+                <td>{scheduleTime}</td>
+                <td>{route.destinations[0]}</td>
+                <td>{flightName}</td>
+                <td>{terminal === null ? 'TBA': terminal}</td>
+                <td>{publicFlightState.flightStates[0]}</td>
+                <td>Action</td>
+            </tr>
         )
     }
 }
