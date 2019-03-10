@@ -61,15 +61,27 @@ module.exports = {
         parsed,
         link: data.headers.get('link')
       })))
-      .then((flights, link) => {
+      .then((flights) => {
+        const links = [];
+        if(flights.link) {
+          flights.link.split(',').map((curr) => {              
+            const key = (/(rel=")(.+)(")/).test(curr) 
+              ? curr.match(/(rel=")(.+)(")/)[2] 
+              : '';
+            const val = (/(page=)(.+)(>)/).test(curr) 
+              ? curr.match(/(page=)(.+)(>)/)[2] 
+              : '0';
+            
+              return {[key]: val}
+          }, {});
+        }
+        
         res
           .status(200)
           .json({
             message: 'Fetched flights successfully.',
             flights: flights.parsed,
-            link: flights.link.split(',').map((acc, curr) => ({
-              [acc.split('; ')[1].replace('rel="', '').replace('"', '')]: acc.split('; ')[0].replace('<', '').replace('>', '')
-            }), {})
+            link: links
           });
       })
       .catch((error) => {
