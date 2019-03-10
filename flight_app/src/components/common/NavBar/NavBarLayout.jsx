@@ -7,8 +7,7 @@ class NavBar extends Component {
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="#home">Schiphol Airport</Navbar.Brand>
                 <Nav className="mr-auto">
-                    <Nav.Link href="#home">ARRIVALS</Nav.Link>
-                    <Nav.Link href="#features">DEPARTURES</Nav.Link>
+                    <Nav.Link href="#home">FLIGHT INFORMATION</Nav.Link>
                     <Nav.Link href="#pricing">SIGN UP</Nav.Link>
                     <Nav.Link href="#pricing">LOGIN</Nav.Link>
                 </Nav>

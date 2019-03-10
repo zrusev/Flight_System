@@ -13,13 +13,28 @@ class App extends Component {
     this.state = {
       arrivals: {
         arrivals: [],
-        page: 0
+        page: 0,
+        pagination: []
       },
       departures: {
         departures: [],
-        page: 0
+        page: 0,
+        pagination: []
       }
     }
+  }
+
+  loadPage(page, direction) {
+    fetch(`${serverBaseURL}/feed/flights/page/${encodeURIComponent(page)}/direction/${encodeURIComponent(direction)}`)
+    .then((res) => res.json())
+    .then((data) => {
+      this.setState({
+        arrivals: {
+          flights: data.flights.flights,
+          pagination: data.link
+        }
+      })
+    })
   }
 
   componentDidMount() {
@@ -32,11 +47,11 @@ class App extends Component {
         this.setState({
           arrivals: {
             flights: res1.flights.flights,
-            pagination: res1.links
+            pagination: res1.link
           },
           departures: {
             flights: res2.flights.flights,
-            pagination: res2.links
+            pagination: res2.link
           }
         })
     })
@@ -54,13 +69,17 @@ class App extends Component {
             crossOrigin="anonymous"
           />
           <NavBar />
+          <br />
         </header>
         <main>
           <Switch>
-            <Route exact path='/' 
-              render={() => <HomePage 
-              arrivals={arrivals.flights} 
-              departures={departures.flights} />} />
+            <Route exact path='/' render={() => 
+              <HomePage 
+                arrivals={arrivals} 
+                departures={departures} 
+                pageLoader={this.loadPage.bind(this)} 
+              />}              
+            />
             <Route component={NotFoundPage} />
           </Switch>
         </main>

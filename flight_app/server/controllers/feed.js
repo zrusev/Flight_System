@@ -62,9 +62,9 @@ module.exports = {
         link: data.headers.get('link')
       })))
       .then((flights) => {
-        const links = [];
+        let links = [];
         if(flights.link) {
-          flights.link.split(',').map((curr) => {              
+          links = flights.link.split(',').map((curr) => {              
             const key = (/(rel=")(.+)(")/).test(curr) 
               ? curr.match(/(rel=")(.+)(")/)[2] 
               : '';
