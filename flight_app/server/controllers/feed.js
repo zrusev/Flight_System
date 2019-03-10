@@ -31,10 +31,10 @@ function encodeQueryString(params) {
     ""
 }
 
-function getProps(req) {
+function getProps(page, direction) {
   return Object.assign({
-    "flightdirection": "D",
-    "page": "0",
+    "flightdirection": direction,
+    "page": page,
     "sort": "scheduletime",
     "includedelays": "false"
   }, {
@@ -50,7 +50,9 @@ const barcodeNum = function randomRange() {
 
 module.exports = {
   getFlights: (req, res, next) => {
-    fetch(`${baseURL}/flights${encodeQueryString(getProps(req))}`, {
+    const { page, direction } = req.params;
+
+    fetch(`${baseURL}/flights${encodeQueryString(getProps(page, direction))}`, {
         headers: {
           "ResourceVersion": "v3"
         }

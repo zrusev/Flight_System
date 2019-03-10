@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Flight from '../Flight/Flight';
+import loadingBar from '../../style/loadingBar.gif';
+
 
 class HomePage extends Component {
   render() {
-    const { flights } = this.props;
+    const { arrivals, departures } = this.props;
 
-    if (!flights) {
-      return <h1>No movies at the moment</h1>
+    if (!arrivals && !departures) {
+      return <img src={loadingBar} alt="loadingBar"/>
     }
 
     return (
@@ -22,10 +24,14 @@ class HomePage extends Component {
         </Row>
         <Row>
           <Col offset={3} sm={6}>
-            <Flight flights={flights} />
+          {
+            <Flight flights={arrivals} />
+          }
           </Col>
           <Col offset={3} sm={6}>
-            <Flight flights={flights} />
+          {
+            <Flight flights={departures} />
+          }            
           </Col>
         </Row>
       </Container>

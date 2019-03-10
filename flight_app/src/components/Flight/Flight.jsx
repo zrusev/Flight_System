@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Table, Pagination } from 'react-bootstrap';
-import FlightDetails from '../Flight/FlightDetails';
+import FlightDetails from './FlightDetails';
 
 class Flight extends Component {    
     render() {
         const { flights } = this.props; 
+        
         let active = 2;
         let items = [];
         for (let number = 1; number <= 5; number++) {
@@ -30,8 +31,8 @@ class Flight extends Component {
                 </thead>
                 <tbody>
                     {
-                        flights.map(fl => (
-                            <FlightDetails key={fl.id} details={fl} />
+                        flights.map(flight => (
+                            <FlightDetails key={flight.id} details={flight} />
                         ))
                     }
                 </tbody>

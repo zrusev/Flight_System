@@ -11,39 +11,56 @@ class App extends Component {
     super(props);
 
     this.state = {
-      flights: [],
-      pagination: []
+      arrivals: {
+        arrivals: [],
+        page: 0
+      },
+      departures: {
+        departures: [],
+        page: 0
+      }
     }
   }
 
   componentDidMount() {
-    fetch(`${serverBaseURL}/feed/flights`)
-    .then((res) => res.json())
-    .then((data) => {
-      this.setState({        
-        flights: data.flights.flights,
-        pagination: data.links
-      })
+    Promise.all([
+      fetch(`${serverBaseURL}/feed/flights/page/${encodeURIComponent(this.state.arrivals.page)}/direction/A`),
+      fetch(`${serverBaseURL}/feed/flights/page/${encodeURIComponent(this.state.departures.page)}/direction/D`)
+    ])
+    .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
+    .then(([res1, res2]) => {
+        this.setState({
+          arrivals: {
+            flights: res1.flights.flights,
+            pagination: res1.links
+          },
+          departures: {
+            flights: res2.flights.flights,
+            pagination: res2.links
+          }
+        })
     })
-    .catch((error) => console.dir(error));
   }
-
+  
   render() {
-    const { flights } = this.state;
+    const { arrivals, departures } = this.state;
 
     return (
       <div className='App'>
         <header>
-          <link rel="stylesheet" 
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-                integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" 
-                crossOrigin="anonymous"
+          <link rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+            integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+            crossOrigin="anonymous"
           />
           <NavBar />
         </header>
         <main>
           <Switch>
-            <Route exact path='/' render={() => <HomePage flights={flights} />} />
+            <Route exact path='/' 
+              render={() => <HomePage 
+              arrivals={arrivals.flights} 
+              departures={departures.flights} />} />
             <Route component={NotFoundPage} />
           </Switch>
         </main>
