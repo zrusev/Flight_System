@@ -27,7 +27,7 @@ class Flight extends Component {
                 )                
             });
         }
-            
+
         return (
             <>
                 <Table striped bordered hover size="sm">
@@ -39,13 +39,13 @@ class Flight extends Component {
                             <th>FLIGHT</th>
                             <th>TERMINAL</th>
                             <th>STATUS</th>
-                            <th></th>
+                            <th>INFO</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             flights.map(flight => (
-                                <FlightDetails key={`${flight.id}-${flight.flightName}`} details={flight} />
+                                <FlightDetails key={`${flight.id}-${flight.flightName}`} details={flight} section={section} />
                             ))
                         }
                     </tbody>
