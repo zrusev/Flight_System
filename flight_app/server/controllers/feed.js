@@ -62,18 +62,23 @@ module.exports = {
         link: data.headers.get('link')
       })))
       .then((flights) => {
-        let links = [];
+        let links = [];        
         if(flights.link) {
           links = flights.link.split(',').map((curr) => {              
             const key = (/(rel=")(.+)(")/).test(curr) 
-              ? curr.match(/(rel=")(.+)(")/)[2] 
-              : '';
+            ? curr.match(/(rel=")(.+)(")/)[2] 
+            : '';
             const val = (/(page=)(.+)(>)/).test(curr) 
-              ? curr.match(/(page=)(.+)(>)/)[2] 
-              : '0';
+            ? curr.match(/(page=)(.+)(>)/)[2] 
+            : '0';
             
-              return {[key]: val}
+            return {[key]: val}
           }, {});
+          
+          const customSorting = ['first', 'prev', 'next', 'last']
+          links.sort(function(a, b) {
+            return customSorting.indexOf(Object.keys(a)[0]) - customSorting.indexOf(Object.keys(b)[0]);
+          });
         }
         
         res

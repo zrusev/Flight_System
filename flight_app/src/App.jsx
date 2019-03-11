@@ -25,11 +25,16 @@ class App extends Component {
   }
 
   loadPage(page, direction) {
-    fetch(`${serverBaseURL}/feed/flights/page/${encodeURIComponent(page)}/direction/${encodeURIComponent(direction)}`)
+    const directions = {
+      arrivals: 'A',
+      departures: 'D'
+    }
+
+    fetch(`${serverBaseURL}/feed/flights/page/${encodeURIComponent(page)}/direction/${encodeURIComponent(directions[direction])}`)
     .then((res) => res.json())
     .then((data) => {
       this.setState({
-        arrivals: {
+        [direction]: {
           flights: data.flights.flights,
           pagination: data.link
         }

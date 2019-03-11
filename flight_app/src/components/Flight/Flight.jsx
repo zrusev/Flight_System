@@ -4,11 +4,11 @@ import FlightDetails from './FlightDetails';
 
 class Flight extends Component {
     handleClick = (e) => {
-        this.props.pageLoader(e.target.id, 'D');
+        this.props.pageLoader(e.target.id.split('-')[1], e.target.name);
     }
 
     render() {
-        const { flights, pagination } = this.props;
+        const { flights, pagination, section } = this.props;
 
         let items = [];
         if (pagination) {  
@@ -18,21 +18,23 @@ class Flight extends Component {
 
                 items.push(
                     <Pagination.Item 
-                        key={id} 
-                        id={val} 
+                        key={`${section}-${id}-${val}`} 
+                        id={`${section}-${val}`} 
+                        name={section}
                         onClick={this.handleClick}>
                         {id}
                     </Pagination.Item>,
-                )
+                )                
             });
         }
             
         return (
             <>
-                <Table striped bordered hover>
+                <Table striped bordered hover size="sm">
                     <thead>
                         <tr>
                             <th>TIME</th>
+                            <th>DATE</th>
                             <th>TO</th>
                             <th>FLIGHT</th>
                             <th>TERMINAL</th>
@@ -43,7 +45,7 @@ class Flight extends Component {
                     <tbody>
                         {
                             flights.map(flight => (
-                                <FlightDetails key={flight.id} details={flight} />
+                                <FlightDetails key={`${flight.id}-${flight.flightName}`} details={flight} />
                             ))
                         }
                     </tbody>
