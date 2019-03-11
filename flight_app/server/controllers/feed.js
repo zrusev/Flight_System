@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator/check');
 const fetch = require('node-fetch');
 const secret = require('secret');
+var airports = require('airport-codes');
 const Flight = require('../models/Flight');
 const Ticket = require('../models/Ticket');
 const User = require('../models/User');
@@ -36,6 +37,7 @@ function getProps(page, direction) {
     "flightdirection": direction,
     "page": page,
     "sort": "scheduletime",
+    "scheduleTime": new Date().getTime().toString(),
     "includedelays": "false"
   }, {
     app_id: secret.get('app_id')
@@ -80,7 +82,12 @@ module.exports = {
             return customSorting.indexOf(Object.keys(a)[0]) - customSorting.indexOf(Object.keys(b)[0]);
           });
         }
-        
+
+        flights.parsed.flights.map((fl) => {
+          const destination = airports.findWhere({ iata: fl.route.destinations[0] }).get('city');
+          fl['destinationName'] = destination;           
+        })
+
         res
           .status(200)
           .json({
@@ -98,20 +105,23 @@ module.exports = {
       });
   },
   getFlightById: (req, res, next) => {
-    const flightId = req.params.flightId;
+    const { id, flightName } = req.params;
 
-    fetch(`${baseURL}/flights/${flightId}${encodeQueryString(getProps(req))}`, {
+    fetch(`${baseURL}/flights/${id}/codeshares/${flightName}${encodeQueryString(getProps(req))}`, {
         headers: {
           "ResourceVersion": "v3"
         }
       })
       .then((data) => data.json())
-      .then((fligh) => {
+      .then((flight) => {
+        const destination = airports.findWhere({ iata: flight.route.destinations[0] }).get('city');
+        flight['destinationName'] = destination;
+        
         res
           .status(200)
           .json({
             message: 'Fetched flight successfully.',
-            fligh
+            flight
           });
       })
       .catch((error) => {

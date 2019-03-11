@@ -6,7 +6,8 @@ import { Button } from 'react-bootstrap';
 
 class FlightDetails extends Component {
     handleClick = (id, flightName) => {
-        alert(`${id}-${flightName}`);
+        console.log(`${id}-${flightName}`);
+        this.props.modalOpen();
     }
     render() {
         library.add(faPlaneArrival, faPlaneDeparture);
@@ -16,14 +17,12 @@ class FlightDetails extends Component {
             departures: 'plane-departure'
         }
 
-        const { id, scheduleTime, scheduleDate, flightName, terminal, route, publicFlightState } = this.props.details;
+        const { id, scheduleTime, flightName, terminal, destinationName, publicFlightState } = this.props.details;
         const { section } = this.props;
-
         return (
             <tr>
                 <td>{scheduleTime}</td>
-                <td>{scheduleDate}</td>
-                <td>{route.destinations[0]}</td>
+                <td>{destinationName}</td>
                 <td>{flightName}</td>
                 <td>{terminal === null ? 'TBA': terminal}</td>
                 <td>{publicFlightState.flightStates[0]}</td>

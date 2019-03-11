@@ -1,8 +1,25 @@
 import React, { Component } from 'react';
 import { Table, Pagination } from 'react-bootstrap';
 import FlightDetails from './FlightDetails';
+import DetailsPage from '../DetailsPage/DetailsPage';
 
 class Flight extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = { 
+            modalShow: false 
+        };
+    }
+
+    modalClose = () => this.setState({ 
+        modalShow: false
+    });
+
+    modalOpen = () => this.setState({
+        modalShow: true
+    });
+
     handleClick = (e) => {
         this.props.pageLoader(e.target.id.split('-')[1], e.target.name);
     }
@@ -34,8 +51,7 @@ class Flight extends Component {
                     <thead>
                         <tr>
                             <th>TIME</th>
-                            <th>DATE</th>
-                            <th>TO</th>
+                            <th>{section === 'arrivals' ? 'FROM' : 'TO'}</th>
                             <th>FLIGHT</th>
                             <th>TERMINAL</th>
                             <th>STATUS</th>
@@ -45,12 +61,21 @@ class Flight extends Component {
                     <tbody>
                         {
                             flights.map(flight => (
-                                <FlightDetails key={`${flight.id}-${flight.flightName}`} details={flight} section={section} />
+                                <FlightDetails 
+                                    key={`${flight.id}-${flight.flightName}`} 
+                                    details={flight} 
+                                    section={section}
+                                    modalOpen={this.modalOpen.bind(this)} 
+                                />
                             ))
                         }
                     </tbody>
                 </Table>
                 <Pagination>{items}</Pagination>
+                <DetailsPage 
+                    show={this.state.modalShow} 
+                    onHide={this.modalClose.bind(this)} 
+                />
             </>
         )
     }

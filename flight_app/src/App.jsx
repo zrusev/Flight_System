@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
 import NavBar from './components/common/NavBar/NavBarLayout';
 import HomePage from './components/HomePage/HomePage';
+import DetailsPage from './components/DetailsPage/DetailsPage';
 import NotFoundPage from './components/common/NotFound/NotFoundPage';
 
 const serverBaseURL = 'http://localhost:9999';
@@ -83,8 +84,9 @@ class App extends Component {
                 arrivals={arrivals} 
                 departures={departures} 
                 pageLoader={this.loadPage.bind(this)} 
-              />}              
+              />}
             />
+            <Route exact path='/details' render={() => <DetailsPage />} />
             <Route component={NotFoundPage} />
           </Switch>
         </main>
