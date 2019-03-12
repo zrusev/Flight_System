@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Table, Pagination } from 'react-bootstrap';
 import FlightDetails from './FlightDetails';
 import DetailsPage from '../DetailsPage/DetailsPage';
+
 const serverBaseURL = 'http://localhost:9999';
+
 class Flight extends Component {
     constructor(props) {
         super(props);
@@ -17,7 +19,7 @@ class Flight extends Component {
         modalShow: false
     });
 
-    modalOpen = (id, flightName) => {
+    modalOpen = (id, flightName) => { 
         fetch(`${serverBaseURL}/feed/flights/${encodeURIComponent(id)}/codeshares/${encodeURIComponent(flightName)}`)
         .then((res) => res.json())
         .then((flight) => {

@@ -37,7 +37,6 @@ function getProps(page, direction) {
     "flightdirection": direction,
     "page": page,
     "sort": "scheduletime",
-    "scheduleTime": new Date().getTime().toString(),
     "includedelays": "false"
   }, {
     app_id: secret.get('app_id')
@@ -84,7 +83,8 @@ module.exports = {
         }
 
         flights.parsed.flights.map((fl) => {
-          const destination = airports.findWhere({ iata: fl.route.destinations[0] }).get('city');
+          const route = fl.route.destinations[fl.route.destinations.length - 1];
+          const destination = airports.findWhere({ iata: route }).get('city');
           fl['destinationName'] = destination;           
         })
 
@@ -107,17 +107,23 @@ module.exports = {
   getFlightById: (req, res, next) => {
     const { id, flightName } = req.params;
 
-    fetch(`${baseURL}/flights/${id}/codeshares/${flightName}${encodeQueryString(getProps(req))}`, {
+    const creds = Object.assign({
+      app_id: secret.get('app_id')
+    }, {
+      app_key: secret.get('app_key')
+    });
+
+    fetch(`${baseURL}/flights/${id}/codeshares/${flightName}${encodeQueryString(creds)}`, {
         headers: {
           "ResourceVersion": "v3"
         }
       })
       .then((data) => data.json())
       .then((flight) => {
-
         let destination = null;
         if(!flight) { 
-          destination = airports.findWhere({ iata: flight.route.destinations[0] }).get('city');
+          const route = flight.route.destinations[0];
+          destination = airports.findWhere({ iata: route }).get('city');
         }
         flight['destinationName'] = destination;
         
