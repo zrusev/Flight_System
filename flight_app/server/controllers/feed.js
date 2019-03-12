@@ -114,7 +114,11 @@ module.exports = {
       })
       .then((data) => data.json())
       .then((flight) => {
-        const destination = airports.findWhere({ iata: flight.route.destinations[0] }).get('city');
+
+        let destination = null;
+        if(!flight) { 
+          destination = airports.findWhere({ iata: flight.route.destinations[0] }).get('city');
+        }
         flight['destinationName'] = destination;
         
         res

@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Table, Pagination } from 'react-bootstrap';
 import FlightDetails from './FlightDetails';
 import DetailsPage from '../DetailsPage/DetailsPage';
-
+const serverBaseURL = 'http://localhost:9999';
 class Flight extends Component {
     constructor(props) {
         super(props);
 
         this.state = { 
-            modalShow: false 
+            modalShow: false,
+            flight: null
         };
     }
 
@@ -16,9 +17,16 @@ class Flight extends Component {
         modalShow: false
     });
 
-    modalOpen = () => this.setState({
-        modalShow: true
-    });
+    modalOpen = (id, flightName) => {
+        fetch(`${serverBaseURL}/feed/flights/${encodeURIComponent(id)}/codeshares/${encodeURIComponent(flightName)}`)
+        .then((res) => res.json())
+        .then((flight) => {
+          this.setState({
+            flight,
+            modalShow: true
+          })
+        })
+    };
 
     handleClick = (e) => {
         this.props.pageLoader(e.target.id.split('-')[1], e.target.name);
@@ -73,7 +81,8 @@ class Flight extends Component {
                 </Table>
                 <Pagination>{items}</Pagination>
                 <DetailsPage 
-                    show={this.state.modalShow} 
+                    show={this.state.modalShow}
+                    flight={this.state.flight}
                     onHide={this.modalClose.bind(this)} 
                 />
             </>
