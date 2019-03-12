@@ -24,10 +24,10 @@ class DetailsPage extends Component {
                 this.props.show 
                 ?  
                   <>
-                  <table class="table table-borderless">
+                  <table className="table table-borderless">
                     <tbody>
-                      <tr class="d-flex">
-                        <td class="col-6">
+                      <tr className="d-flex">
+                        <td className="col-6">
                           <p><b>Flight ID: </b> { !this.props.flight.flight.id ? 'TBA' : this.props.flight.flight.id }</p>
                           <p><b>Flight Name: </b> { !this.props.flight.flight.flightName ? 'TBA' : this.props.flight.flight.flightName }</p>
                           <p><b>Destination: </b> { !this.props.flight.flight.destinationName ? 'TBA' : this.props.flight.flight.destinationName }</p>
@@ -38,7 +38,7 @@ class DetailsPage extends Component {
                           <p><b>Expected Time Boarding: </b> { !this.props.flight.flight.expectedTimeBoarding ? 'TBA' : this.props.flight.flight.expectedTimeBoarding }</p>
                           <p><b>Expected Time Boarding: </b> { !this.props.flight.flight.expectedTimeBoarding ? 'TBA' : this.props.flight.flight.expectedTimeBoarding }</p>
                         </td>
-                        <td class="col-6 text-center">
+                        <td className="col-6 text-center">
                           {
                             !this.props.flight.flight.flightName 
                               ? null 
