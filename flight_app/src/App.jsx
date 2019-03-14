@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
-import NavBarLayout from './components/Common/NavBar/NavBarLayout';
-import FooterLayout from './components/Common/Footer/FooterLayout';
-import NotFoundPage from './components/Common/NotFound/NotFoundPage';
-import HomePage from './components/HomePage/HomePage';
+import FlightService from './services/FlightService';
+import HomePage from './views/HomePage/HomePage';
+import Login from './views/Login/LoginPage';
+import NavBarLayout from './components/common/NavBar/NavBarLayout';
+import FooterLayout from './components/common/Footer/FooterLayout';
+import NotFoundPage from './components/common/NotFound/NotFoundPage';
 import BoardingPass from './components/BoardingPass/BoardingPass';
 import Ticket from './components/Ticket/Ticket';
-
-const serverBaseURL = 'http://localhost:9999';
 
 class App extends Component {
   constructor(props) {
     super(props);
-
+    
     this.state = {
       arrivals: {
         arrivals: [],
@@ -27,42 +27,50 @@ class App extends Component {
     }
   }
 
+  static service = new FlightService();
+  
   loadPage(page, direction) {
     const directions = {
       arrivals: 'A',
       departures: 'D'
     }
 
-    fetch(`${serverBaseURL}/feed/flights/page/${encodeURIComponent(page)}/direction/${encodeURIComponent(directions[direction])}`)
-    .then((res) => res.json())
-    .then((data) => {
-      this.setState({
-        [direction]: {
-          flights: data.flights.flights,
-          pagination: data.link
-        }
-      })
-    })
+    try {
+      App.service.getAllFlights(page, directions[direction])
+      .then((data) => {
+        this.setState({
+          [direction]: {
+            flights: data.flights.flights,
+            pagination: data.link
+          }
+        })
+      })      
+    } catch (error) {
+      console.dir(error);
+    }
   }
 
   componentDidMount() {
-    Promise.all([
-      fetch(`${serverBaseURL}/feed/flights/page/${encodeURIComponent(this.state.arrivals.page)}/direction/A`),
-      fetch(`${serverBaseURL}/feed/flights/page/${encodeURIComponent(this.state.departures.page)}/direction/D`)
-    ])
-    .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
-    .then(([res1, res2]) => {
-        this.setState({
-          arrivals: {
-            flights: res1.flights.flights,
-            pagination: res1.link
-          },
-          departures: {
-            flights: res2.flights.flights,
-            pagination: res2.link
-          }
-        })
-    })
+    try {
+      Promise.all([
+        App.service.getAllFlights(this.state.arrivals.page, 'A'),
+        App.service.getAllFlights(this.state.departures.page, 'D')
+      ])
+      .then(([res1, res2]) => {
+          this.setState({
+            arrivals: {
+              flights: res1.flights.flights,
+              pagination: res1.link
+            },
+            departures: {
+              flights: res2.flights.flights,
+              pagination: res2.link
+            }
+          })
+      });      
+    } catch (error) {
+      console.dir(error);
+    }
   }
   
   render() {
@@ -77,9 +85,9 @@ class App extends Component {
                 <HomePage 
                   arrivals={arrivals} 
                   departures={departures} 
-                  pageLoader={this.loadPage.bind(this)} 
-                />}
-                />
+                  pageLoader={this.loadPage.bind(this)} />}
+              />
+              <Route exact path='/login' render={() => <Login />} />
               <Route exact path='/boardingpass' render={() => <BoardingPass />} />
               <Route exact path='/ticket' render={() => <Ticket />} />
               <Route component={NotFoundPage} />

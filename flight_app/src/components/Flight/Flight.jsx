@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import FlightSerice from '../../services/FlightService';
 import { Table, Pagination } from 'react-bootstrap';
 import FlightDetails from './FlightDetails';
 import DetailsPage from '../DetailsPage/DetailsPage';
-
-const serverBaseURL = 'http://localhost:9999';
+import App from '../../App';
 
 class Flight extends Component {
     constructor(props) {
@@ -15,13 +15,14 @@ class Flight extends Component {
         };
     }
 
+    static service = new FlightSerice();
+
     modalClose = () => this.setState({ 
         modalShow: false
     });
 
     modalOpen = (id, flightName) => { 
-        fetch(`${serverBaseURL}/feed/flights/${encodeURIComponent(id)}/codeshares/${encodeURIComponent(flightName)}`)
-        .then((res) => res.json())
+        App.service.getFlightByIdName(id, flightName)
         .then((flight) => {
           this.setState({
             flight,

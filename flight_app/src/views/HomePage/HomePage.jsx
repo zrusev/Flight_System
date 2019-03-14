@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import Flight from '../Flight/Flight';
-import LoadingBar from '../Common/LoadingBar/LoadingBar';
+import Flight from '../../components/Flight/Flight';
+import LoadingBar from '../../components/common/LoadingBar/LoadingBar';
 
 class HomePage extends Component {
   render() {
