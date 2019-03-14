@@ -103,7 +103,14 @@ module.exports = {
             .json({            
               message: 'User created!',
               success: true,
-              userId: user._id
+              user: {
+                id: user._id.toString(),
+                email: user.email,
+                full_name: user.full_name,
+                roles: user.roles,
+                flights: user.flights,
+                tickets: user.tickets
+              }
             });
         })
         .catch((error) => {
@@ -151,8 +158,15 @@ module.exports = {
         res.status(200).json({
           message: 'User successfully logged in!',
           success: true,
-          token,
-          userId: user._id.toString()
+          token,        
+          user: {
+            id: user._id.toString(),
+            email: user.email,
+            full_name: user.full_name,
+            roles: user.roles,
+            flights: user.flights,
+            tickets: user.tickets
+          }
         });
       })
       .catch(error => {

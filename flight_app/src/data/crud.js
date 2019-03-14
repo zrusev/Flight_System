@@ -1,10 +1,21 @@
 function request(method) {
+    const getAuthHeader = () => {
+        const token = window.localStorage.getItem('auth_token');
+
+        return (token && token.length)
+            ? { 'Authorization': `Bearer ${token}` }
+            : {}
+    }
+
     return async (url, data, options) => {
+        const authHeader = getAuthHeader();
+
         const response = await fetch(url, {
             method,
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                ...authHeader
             },
             body: data !== undefined && Object.keys(data).length
                     ? JSON.stringify(data)

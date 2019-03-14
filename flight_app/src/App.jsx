@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
 import FlightService from './services/FlightService';
+import { UserProvider, defaultUserState } from './components/contexts/UserContext';
 import HomePage from './views/HomePage/HomePage';
 import Login from './views/Login/LoginPage';
 import NavBarLayout from './components/common/NavBar/NavBarLayout';
@@ -13,7 +14,16 @@ class App extends Component {
   constructor(props) {
     super(props);
     
+    const parsedUser = window.localStorage.getItem('user') 
+      ? JSON.parse(window.localStorage.getItem('user')) 
+      : {}
+
     this.state = {
+      user: {
+        ...defaultUserState,
+        ...parsedUser,
+        updateUser: this.updateUser
+      },
       arrivals: {
         arrivals: [],
         page: 0,
@@ -73,27 +83,34 @@ class App extends Component {
     }
   }
   
+  updateUser = (user) => {
+    this.setState({ user });
+  }
+
   render() {
     const { arrivals, departures } = this.state;
+    const { user } = this.state;
 
     return (
       <div className='App'>
-        <NavBarLayout />
-        <main>
-            <Switch>
-              <Route exact path='/' render={() => 
-                <HomePage 
+        <UserProvider value={user}>
+          <NavBarLayout />
+            <main>
+              <Switch>
+                <Route exact path='/' render={() => 
+                  <HomePage 
                   arrivals={arrivals} 
                   departures={departures} 
                   pageLoader={this.loadPage.bind(this)} />}
-              />
-              <Route exact path='/login' render={() => <Login />} />
-              <Route exact path='/boardingpass' render={() => <BoardingPass />} />
-              <Route exact path='/ticket' render={() => <Ticket />} />
-              <Route component={NotFoundPage} />
-            </Switch>
-          </main>
-        <FooterLayout />
+                  />
+                <Route exact path='/login' render={() => <Login />} />
+                <Route exact path='/boardingpass' render={() => <BoardingPass />} />
+                <Route exact path='/ticket' render={() => <Ticket />} />
+                <Route component={NotFoundPage} />
+              </Switch>
+            </main>
+          <FooterLayout />
+        </UserProvider>
       </div>
     );
   }

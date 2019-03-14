@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import AuthenticationService from '../../services/AuthenticationService';
+import { UserConsumer } from '../../components/contexts/UserContext';
 
 class Login extends Component {
     constructor() {
@@ -10,7 +11,6 @@ class Login extends Component {
         this.state = {
             email: '',
             password: '',
-            isLoggedIn: false,
             error: ''
         }
     }
@@ -26,6 +26,7 @@ class Login extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
 
+        const { updateUser } = this.props;
         const { email, password } = this.state;
 
         const credentials = { email, password }
@@ -41,13 +42,18 @@ class Login extends Component {
 
                     throw new Error(errors);
                 }
+                
+                window.localStorage.setItem('auth_token', result.token);
+                window.localStorage.setItem('user', JSON.stringify({
+                    ...result.user,
+                    isLoggedIn: true,
+                }));
 
-                console.log(result);
-
-                this.setState({
-                    isLoggedIn: true
+                updateUser({
+                    isLoggedIn: true,
+                    ...result.user
                 });
-
+                
             } catch (error) {
                 console.dir(error);
                 this.setState({
@@ -58,7 +64,8 @@ class Login extends Component {
     }
 
     render() {
-        const { email, password, isLoggedIn, error } = this.state;
+        const { email, password, error } = this.state;
+        const { isLoggedIn } = this.props;
 
         if (isLoggedIn) {
             return <Redirect to='/' />
@@ -116,4 +123,19 @@ class Login extends Component {
     }
 }
 
-export default Login;
+const LoginWithContext = (props) => {
+    return (
+        <UserConsumer>
+            {
+                ({ isLoggedIn, updateUser }) => (
+                    <Login 
+                        {...props} 
+                        isLoggedIn={isLoggedIn} 
+                        updateUser={updateUser} />
+                )
+            }
+        </UserConsumer>
+    )
+}
+
+export default LoginWithContext;
