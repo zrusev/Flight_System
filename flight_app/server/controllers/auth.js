@@ -1,13 +1,46 @@
-const {validationResult} = require('express-validator/check');
+const { validationResult } = require('express-validator/check');
+const validator = require('validator')
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const encryption = require('../util/encryption');
 const secret = require('secret');
 
+function validateSignupForm (payload) {
+  const errors = {}
+  let isFormValid = true
+  let message = ''
+
+  if (!payload || typeof payload.full_name !== 'string' || payload.full_name.trim().length < 4) {
+    isFormValid = false
+    errors.full_name = 'Name must be at least 4 characters long';
+  }
+
+  if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
+    isFormValid = false
+    errors.email = 'Please provide a correct email address';
+  }
+
+  if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
+    isFormValid = false
+    errors.password = 'Password must be at least 8 characters long';
+  }
+
+  if (!isFormValid) {
+    message = 'Check the form for errors.'
+  }
+
+  return {
+    success: isFormValid,
+    message,
+    errors
+  }
+}
+
 function validateUser(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(422).json({
+      success: false,
       message: 'Validation failed, entered data is incorrect',
       errors: errors.array()
     });
@@ -18,8 +51,43 @@ function validateUser(req, res) {
   return true;
 }
 
+function validateLoginForm (payload) {
+  const errors = {}
+  let isFormValid = true
+  let message = ''
+
+  if (!payload || typeof payload.email !== 'string' || payload.email.trim().length === 0 || !validator.isEmail(payload.email)) {
+    isFormValid = false
+    errors.email = 'Please provide your email address.'
+  }
+
+  if (!payload || typeof payload.password !== 'string' || payload.password.trim().length === 0) {
+    isFormValid = false
+    errors.password = 'Please provide your password.'
+  }
+
+  if (!isFormValid) {
+    message = 'Check the form for errors.'
+  }
+
+  return {
+    success: isFormValid,
+    message,
+    errors
+  }
+}
+
 module.exports = {
   signUp: (req, res, next) => {
+    const validationResult = validateSignupForm(req.body)
+    if (!validationResult.success) {
+      return res.status(200).json({
+        success: false,
+        message: validationResult.message,
+        errors: validationResult.errors
+      })
+    }  
+
     if (validateUser(req, res)) {
       const { email, password, full_name } = req.body;
       const salt = encryption.generateSalt();
@@ -32,8 +100,9 @@ module.exports = {
           roles: ['User']
         }).then((user) => {
           res.status(201)
-            .json({
+            .json({            
               message: 'User created!',
+              success: true,
               userId: user._id
             });
         })
@@ -47,6 +116,15 @@ module.exports = {
     }
   },
   signIn: (req, res, next) => {
+    const validationResult = validateLoginForm(req.body)
+    if (!validationResult.success) {
+      return res.status(200).json({
+        success: false,
+        message: validationResult.message,
+        errors: validationResult.errors
+      })
+    }
+
     const { email, password } = req.body;
 
     User.findOne({
@@ -72,6 +150,7 @@ module.exports = {
 
         res.status(200).json({
           message: 'User successfully logged in!',
+          success: true,
           token,
           userId: user._id.toString()
         });

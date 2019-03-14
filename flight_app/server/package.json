@@ -16,6 +16,7 @@
     "jsonwebtoken": "8.4.0",
     "mongoose": "5.4.7",
     "node-fetch": "2.3.0",
-    "secret": "1.0.2"
+    "secret": "1.0.2",
+    "validator": "^10.11.0"
   }
 }

@@ -12,11 +12,11 @@ class NavBarLayout extends Component {
                     crossOrigin="anonymous"
                 />
                 <Navbar bg="dark" variant="dark">
-                    <NavLink to='/'><Navbar.Brand>Schiphol Airport</Navbar.Brand></NavLink>
+                    <Navbar.Brand>Schiphol Airport</Navbar.Brand>
                     <Nav className="mr-auto">
                         <Navbar.Text><NavLink to='/'>INFORMATION</NavLink></Navbar.Text>
                         <Navbar.Text><NavLink to='/signup'>SIGN UP</NavLink></Navbar.Text>
-                        <Navbar.Text><NavLink to='/signin'>LOGIN</NavLink></Navbar.Text>
+                        <Navbar.Text><NavLink to='/login'>LOGIN</NavLink></Navbar.Text>
                     </Nav>
                     <Form inline>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2" />

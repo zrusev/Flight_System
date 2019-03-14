@@ -2,8 +2,8 @@ import { get } from '../data/crud.js';
 
 class FlightService {
     constructor() {
-        this.serverBaseURL = 'http://localhost:9999';
-        this.allFlights = `${this.serverBaseURL}/feed/flights`;
+        this.serverBaseURL = 'http://localhost:9999/feed';
+        this.allFlights = `${this.serverBaseURL}/flights`;
     }
 
     getAllFlights(page, direction) {
