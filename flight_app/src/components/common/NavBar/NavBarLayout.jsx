@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 
-class NavBar extends Component {
+class NavBarLayout extends Component {
     render() {
         return (
             <header>
@@ -11,11 +12,11 @@ class NavBar extends Component {
                     crossOrigin="anonymous"
                 />
                 <Navbar bg="dark" variant="dark">
-                    <Navbar.Brand href="#home">Schiphol Airport</Navbar.Brand>
+                    <NavLink to='/'><Navbar.Brand>Schiphol Airport</Navbar.Brand></NavLink>
                     <Nav className="mr-auto">
-                        <Nav.Link href="#home">FLIGHT INFORMATION</Nav.Link>
-                        <Nav.Link href="#pricing">SIGN UP</Nav.Link>
-                        <Nav.Link href="#pricing">LOGIN</Nav.Link>
+                        <Navbar.Text><NavLink to='/'>FLIGHT INFORMATION</NavLink></Navbar.Text>
+                        <Navbar.Text><NavLink to='/signup'>SIGN UP</NavLink></Navbar.Text>
+                        <Navbar.Text><NavLink to='/signin'>LOGIN</NavLink></Navbar.Text>
                     </Nav>
                     <Form inline>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2" />
@@ -28,4 +29,4 @@ class NavBar extends Component {
     }
 }
 
-export default NavBar;
+export default NavBarLayout;

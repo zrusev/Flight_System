@@ -71,18 +71,18 @@ class App extends Component {
       <div className='App'>
         <NavBarLayout />
         <main>
-          <Switch>
-            <Route exact path='/' render={() => 
-              <HomePage 
+            <Switch>
+              <Route exact path='/' render={() => 
+                <HomePage 
                 arrivals={arrivals} 
-                departures={departures} 
-                pageLoader={this.loadPage.bind(this)} 
-              />}
-            />
-            <Route exact path='/details' render={() => <DetailsPage />} />
-            <Route component={NotFoundPage} />
-          </Switch>
-        </main>
+                  departures={departures} 
+                  pageLoader={this.loadPage.bind(this)} 
+                />}
+                />
+              <Route exact path='/details' render={() => <DetailsPage />} />
+              <Route component={NotFoundPage} />
+            </Switch>
+          </main>
         <FooterLayout />
       </div>
     );
