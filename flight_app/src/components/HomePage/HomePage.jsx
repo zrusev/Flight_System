@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Flight from '../Flight/Flight';
-import loadingBar from '../../style/loadingBar.gif';
+import LoadingBar from '../Common/LoadingBar/LoadingBar';
 
 class HomePage extends Component {
   render() {
     const { arrivals, departures, pageLoader } = this.props;
 
     if (!arrivals.flights && !departures.flights) {
-      return <img src={loadingBar} alt="loadingBar"/>
+      return <LoadingBar />
     }
 
     return (

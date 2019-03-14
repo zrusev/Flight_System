@@ -46,3 +46,7 @@ code {
     transform: rotate(360deg);
   }
 }
+
+.navbar-text {
+  padding: 10px;
+}

@@ -14,7 +14,7 @@ class DetailsPage extends Component {
 
   render() {
     return (
-      <Modal {...this.props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+      <Modal {...this.props} size="lg" aria-labelledby="contained-modal-title-vcenter">
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             FLIGHT DETAILS
@@ -28,7 +28,6 @@ class DetailsPage extends Component {
                 <Container>
                   <Row>
                     <Col sm={6}>
-
                       <Table className="table table-borderless">
                         <tbody>
                           <tr className="d-flex">
@@ -54,13 +53,12 @@ class DetailsPage extends Component {
                           :
                           <>
                             <Row>
-                                <p><b>MORE INFO</b></p>
+                                <p><b>MORE INFO HERE</b></p>
                             </Row>
                             <Row>
                                 <QRCode value={`https://www.schiphol.nl/en/arrivals/?search=${this.props.flight.flight.flightName}`} />
                             </Row>
                             <Row>
-                                <br />
                                 <p><b>OR</b></p>
                             </Row>
                             <Row>

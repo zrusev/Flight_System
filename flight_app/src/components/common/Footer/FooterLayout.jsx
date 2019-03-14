@@ -4,7 +4,7 @@ class FooterLayout extends Component {
     render() {
         return (
             <footer className="footer-copyright text-center py-3">
-                <b>&copy; Book Library {(new Date().getFullYear())}</b>
+                <b>&copy; Flight System {(new Date().getFullYear())}</b>
             </footer>
         )
     }

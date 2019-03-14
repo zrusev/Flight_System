@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
-import NavBarLayout from './components/common/NavBar/NavBarLayout';
-import FooterLayout from './components/common/Footer/FooterLayout';
+import NavBarLayout from './components/Common/NavBar/NavBarLayout';
+import FooterLayout from './components/Common/Footer/FooterLayout';
+import NotFoundPage from './components/Common/NotFound/NotFoundPage';
 import HomePage from './components/HomePage/HomePage';
-import DetailsPage from './components/DetailsPage/DetailsPage';
-import NotFoundPage from './components/common/NotFound/NotFoundPage';
+import BoardingPass from './components/BoardingPass/BoardingPass';
 
 const serverBaseURL = 'http://localhost:9999';
 
@@ -74,12 +74,12 @@ class App extends Component {
             <Switch>
               <Route exact path='/' render={() => 
                 <HomePage 
-                arrivals={arrivals} 
+                  arrivals={arrivals} 
                   departures={departures} 
                   pageLoader={this.loadPage.bind(this)} 
                 />}
                 />
-              <Route exact path='/details' render={() => <DetailsPage />} />
+              <Route exact path='/boardingpass' render={() => <BoardingPass />} />
               <Route component={NotFoundPage} />
             </Switch>
           </main>
