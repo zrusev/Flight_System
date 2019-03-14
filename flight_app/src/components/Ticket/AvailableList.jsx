@@ -1,16 +1,29 @@
 import React, { Component } from 'react';
+import { Table } from 'react-bootstrap';
 
 class AvailableList extends Component {
     render() {
         const seatCount = this.props.available.length;
-        
+
         return (
-            <div className="left">
-                <h4>Available Seats: ({seatCount === 0 ? 'No seats available' : seatCount})</h4>
-                <ul>
-                    {this.props.available.map(res => <li key={res} >{res}</li>)}
-                </ul>
-            </div>
+            <Table>
+                <thead>
+                    <tr>
+                        <th>
+                            Available Seats: ({seatCount === 0 ? 'No seats available' : seatCount})
+                            </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>
+                            <ul>
+                                {this.props.available.map(res => <li key={`available-list-${res}`} >{res}</li>)}
+                            </ul>
+                        </th>
+                    </tr>
+                </tbody>
+            </Table>
         )
     }
 }

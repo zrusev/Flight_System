@@ -8,8 +8,8 @@ h1 {
 }
 
 .grid td {
-    width: 80px;
-    height: 50px;
+    width: 100px;
+    height: 80px;
     padding: 50px 30px;
     border: 2px solid orange;
     text-align: center;
@@ -25,6 +25,12 @@ h1 {
 .reserved {
     background: orange;
     color: #fff;
+    display: inline-block;
+}
+
+.bought {
+    background: grey;
+    color: #ffff;
     display: inline-block;
 }
 
