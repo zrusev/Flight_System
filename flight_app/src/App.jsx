@@ -5,6 +5,7 @@ import FooterLayout from './components/Common/Footer/FooterLayout';
 import NotFoundPage from './components/Common/NotFound/NotFoundPage';
 import HomePage from './components/HomePage/HomePage';
 import BoardingPass from './components/BoardingPass/BoardingPass';
+import Ticket from './components/Ticket/Ticket';
 
 const serverBaseURL = 'http://localhost:9999';
 
@@ -80,6 +81,7 @@ class App extends Component {
                 />}
                 />
               <Route exact path='/boardingpass' render={() => <BoardingPass />} />
+              <Route exact path='/ticket' render={() => <Ticket />} />
               <Route component={NotFoundPage} />
             </Switch>
           </main>
