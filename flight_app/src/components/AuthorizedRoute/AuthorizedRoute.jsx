@@ -4,12 +4,14 @@ import { UserConsumer } from '../contexts/UserContext';
 
 class AuthorizedRoute extends Component {
     render() {
-        const { isLoggedIn, allowedRoles, roles, ...otherProps } = this.props;
-        const inRole = !roles
-            .map(role => role.toLowerCase())
-            .some(role => allowedRoles.includes(role));
+        const { isLoggedIn, allowedRoles = [], roles = [], ...otherProps } = this.props;
+
+        const inRole = !(allowedRoles === undefined) ||
+            (roles
+                .map(role => role.toLowerCase())
+                .some(role => allowedRoles.includes(role)));
         
-        if(!isLoggedIn || inRole) {
+        if(!isLoggedIn || !inRole) {
             return <Redirect to="/login" />;
         }
 

@@ -124,6 +124,7 @@ module.exports = {
   },
   signIn: (req, res, next) => {
     const validationResult = validateLoginForm(req.body)
+
     if (!validationResult.success) {
       return res.status(200).json({
         success: false,
@@ -141,12 +142,14 @@ module.exports = {
         if (!user) {
           const error = new Error('A user with this email could not be found');
           error.statusCode = 401;
+          error.success = false;
           throw error;
         }
 
         if (!user.authenticate(password)) {
-          const error = new Error('A user with this email could not be found');
+          const error = new Error('Invalid email and password combination. Try again');
           error.statusCode = 401;
+          error.success = false;
           throw error;
         }
 
@@ -172,6 +175,7 @@ module.exports = {
       .catch(error => {
         if (!error.statusCode) {
           error.statusCode = 500;
+          error.success = false;
         }
 
         next(error);

@@ -36,13 +36,20 @@ class Login extends Component {
         }, async () => {
             try {
                 const result = await Login.service.login(credentials);
-
+                
                 if (!result.success) {
-                    const errors = Object.values(result.errors).join('');
+                    let errors = '';
+                    if(result.message) {
+                        errors = result.message
+                    }
+
+                    if (result.errors) {                       
+                        errors = Object.values(result.errors).join('');                        
+                    }
 
                     throw new Error(errors);
                 }
-                
+
                 window.localStorage.setItem('auth_token', result.token);
                 window.localStorage.setItem('user', JSON.stringify({
                     ...result.user,
@@ -51,6 +58,7 @@ class Login extends Component {
 
                 updateUser({
                     isLoggedIn: true,
+                    updateUser,
                     ...result.user
                 });
                 
