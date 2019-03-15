@@ -1,10 +1,27 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Table, Button, Modal } from 'react-bootstrap';
 import { } from 'react-bootstrap/ModalHeader';
 import { Container, Row, Col } from 'react-bootstrap';
 const QRCode = require('qrcode.react');
 
 class DetailsPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      reserveSeats: false
+    }
+  }
+
+  handleClick = (event) => {
+    event.preventDefault();
+
+    this.setState({
+      reserveSeats: true
+    })
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.flight === null) {
       return false;
@@ -13,6 +30,10 @@ class DetailsPage extends Component {
   }
 
   render() {
+    if (this.state.reserveSeats) {
+      return <Redirect to={{ pathname: '/reservation', flight: {...this.props.flight.flight} }} />
+    }
+
     return (
       <Modal {...this.props} size="lg" aria-labelledby="contained-modal-title-vcenter">
         <Modal.Header closeButton>
@@ -62,7 +83,7 @@ class DetailsPage extends Component {
                                 <p><b>OR</b></p>
                             </Row>
                             <Row>
-                                <Button variant="primary" size="lg" block onClick={this.props.onHide}>BUY</Button>
+                              <Button variant="primary" size="lg" block onClick={this.handleClick}>BUY</Button>
                             </Row>
                           </>
                       }

@@ -9,8 +9,8 @@ import Logout from './views/Logout/LogoutPage';
 import NavBarLayout from './components/common/NavBar/NavBarLayout';
 import FooterLayout from './components/common/Footer/FooterLayout';
 import NotFoundPage from './components/common/NotFound/NotFoundPage';
-import BoardingPass from './components/BoardingPass/BoardingPass';
-import Ticket from './components/Ticket/Ticket';
+import Reservation from './components/Reservation/Reservation';
+import CheckOut from './components/Checkout/Checkout';
 
 class App extends Component {
   constructor(props) {
@@ -107,8 +107,8 @@ class App extends Component {
                   />
                 <Route exact path='/login' component={Login} />
                 <AuthorizedRoute exact path='/logout' component={Logout} />
-                <Route exact path='/boardingpass' component={BoardingPass} />
-                <AuthorizedRoute exact path='/ticket' component={Ticket} allowedRoles={['admin']} />
+                <AuthorizedRoute exact path='/reservation' component={Reservation} allowedRoles={['admin', 'user']} />
+                <AuthorizedRoute exact path='/checkout' component={CheckOut} />
                 <Route component={NotFoundPage} />
               </Switch>
             </main>

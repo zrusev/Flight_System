@@ -27,12 +27,14 @@ class NavBarLayout extends Component {
                                 ? <Navbar.Text><NavLink to='/logout'>LOG OUT</NavLink></Navbar.Text>
                                 : <Navbar.Text><NavLink to='/login'>LOG IN</NavLink></Navbar.Text>
                         }
+                    </Nav>
+                    <Navbar.Collapse className="justify-content-end">
                         {
                             isLoggedIn
-                                ? <span>`Hello, {full_name}`</span>
+                                ? <Navbar.Text>Signed in as: {full_name}</Navbar.Text>
                                 : null
-                        }
-                    </Nav>
+                        }                        
+                    </Navbar.Collapse>
                     <Form inline>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2" />
                         <Button variant="outline-info">Search flight</Button>

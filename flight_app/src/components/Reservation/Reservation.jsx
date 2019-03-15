@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import {} from './Ticket.css';
+import { Redirect } from 'react-router-dom';
+import {} from './Reservation.css';
 import DrawGrid from './DrawGrid';
 
-class Ticket extends Component {
-    constructor() {
-        super();
+class Reservation extends Component {
+    constructor(props) {
+        super(props);
+        
         this.state = {
+            checkout: false,
             seat: [
                 'Front1', 'Front2', 'Front3',
                 'Front4', 'Front5', 'Front6',
@@ -46,7 +49,23 @@ class Ticket extends Component {
         }
     }
 
+    proceedToCheckout = (event) => {
+        event.preventDefault();
+
+        this.setState({
+            checkout: true
+        })
+    }
+
     render() {
+        if (!this.props.location.flight) {
+            return <Redirect to='/' />
+        }
+
+        if(this.state.checkout) {
+            return <Redirect to={{ pathname: '/checkout', flight: {...this.props.location.flight} }} />
+        }
+
         return (
             <div>
                 <h1>Seat Reservation System</h1>
@@ -56,10 +75,12 @@ class Ticket extends Component {
                     reserved={this.state.seatReserved}
                     selected={this.state.seatSelected}
                     onClickData={this.onClickData.bind(this)}
+                    flight = {this.props.location.flight}
+                    handleClick = {this.proceedToCheckout.bind(this)}
                 />
             </div>
         )
     }
 }
 
-export default Ticket;
+export default Reservation;

@@ -121,7 +121,8 @@ module.exports = {
       .then((data) => data.json())
       .then((flight) => {
         let destination = null;
-        if(!flight) { 
+
+        if(flight.route) { 
           const route = flight.route.destinations[0];
           destination = airports.findWhere({ iata: route }).get('city');
         }

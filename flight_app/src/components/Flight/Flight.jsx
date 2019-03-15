@@ -86,7 +86,7 @@ class Flight extends Component {
                 <DetailsPage 
                     show={this.state.modalShow}
                     flight={this.state.flight}
-                    onHide={this.modalClose.bind(this)} 
+                    onHide={this.modalClose.bind(this)}                    
                 />
             </>
         )
