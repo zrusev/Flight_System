@@ -4,10 +4,38 @@ import BoardingPass from '../BoardingPass/BoardingPass';
 import Cart from '../Cart/Cart';
 import { Container, Row, Col } from 'react-bootstrap';
 import { UserConsumer } from '../contexts/UserContext';
+import FlightService from '../../services/FlightService';
 
 class CheckOut extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            seats: [],
+            flightId: '', 
+            flightName: '',
+            userId: ''
+        }
+    }
+
+    static service = new FlightService();
+
     checkout = (event) => {
         event.preventDefault();
+
+        //Pass state to service       
+    }
+
+    componentWillMount() {
+        const { id, flightName } = this.props.location.flight;
+        const userId = this.props.userId;
+
+        this.setState({
+            seats: Object.values(this.props.location.seats),
+            flightId: id, 
+            flightName: flightName,
+            userId
+        })
     }
 
     render() {
@@ -16,7 +44,6 @@ class CheckOut extends Component {
         }
 
         const { full_name } = this.props;
-        const seats = Object.values(this.props.location.seats);
         
         return (
             <div>
@@ -25,13 +52,21 @@ class CheckOut extends Component {
                     <Row>
                         <Col md={10}>
                             {
-                                seats.map((seat, ind) => 
-                                    <BoardingPass key={`${seat}-${ind}`} {...this.props.location.flight} full_name={full_name} seat={seat} number={ind + 1} />
+                                this.state.seats.map((seat, ind) => 
+                                    <BoardingPass 
+                                        key={`${seat}-${ind}`} 
+                                        {...this.props.location.flight} 
+                                        full_name={full_name} 
+                                        seat={seat} 
+                                        number={ind + 1} />
                                 )
                             }
                         </Col>
                         <Col md={2}>
-                            <Cart flight={this.props.location.flight} handleClick={this.checkout.bind(this)} message='Checkout' />
+                            <Cart 
+                                flight={this.props.location.flight} 
+                                handleClick={this.checkout.bind(this)} 
+                                message='Checkout' />
                         </Col>
                     </Row>
                 </Container>
@@ -44,8 +79,8 @@ const CheckOutWithContext = (props) => {
     return (
         <UserConsumer>
             {
-                ({full_name}) => (
-                    <CheckOut {...props} full_name={full_name} />
+                ({id, full_name}) => (
+                    <CheckOut {...props} userId={id} full_name={full_name} />
                 )
             }
         </UserConsumer>

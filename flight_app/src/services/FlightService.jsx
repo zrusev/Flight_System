@@ -1,4 +1,4 @@
-import { get } from '../data/crud.js';
+import { get, post } from '../data/crud.js';
 
 class FlightService {
     constructor() {
@@ -12,6 +12,10 @@ class FlightService {
 
     getFlightByIdName(id, flightName) {
         return get(`${this.allFlights}/${encodeURIComponent(id)}/codeshares/${encodeURIComponent(flightName)}`);
+    }
+
+    postTicket(flightId,userId) {
+        return post(``);
     }
 }
 
