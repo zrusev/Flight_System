@@ -6,7 +6,7 @@ class Cart extends Component {
         const { flightName, destinationName, scheduleTime, terminal, gate } = this.props.flight;
 
         return (
-            <Card style={{ width: '18rem' }}>
+            <Card>
                 <Card.Img variant="top" src="https://image.freepik.com/free-vector/airplane-flying-leave-blue-dashed-trace_1270-169.jpg" />
                 <Card.Body>
                     <Card.Title>Schiphol Airport</Card.Title>
@@ -22,7 +22,7 @@ class Cart extends Component {
                     <ListGroupItem>Gate: <b>{gate || 'TBA'}</b></ListGroupItem>
                 </ListGroup>
                 <Card.Body>
-                    <Button variant="primary" onClick={this.props.handleClick}>Proceed to Checkout</Button>
+                    <Button variant="primary" onClick={this.props.handleClick}>{this.props.message}</Button>
                 </Card.Body>
             </Card>
         )

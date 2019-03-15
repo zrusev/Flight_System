@@ -9,6 +9,7 @@ class Reservation extends Component {
         
         this.state = {
             checkout: false,
+            error: '',
             seat: [
                 'Front1', 'Front2', 'Front3',
                 'Front4', 'Front5', 'Front6',
@@ -52,9 +53,15 @@ class Reservation extends Component {
     proceedToCheckout = (event) => {
         event.preventDefault();
 
-        this.setState({
-            checkout: true
-        })
+        if (this.state.seatSelected.length) {
+            this.setState({
+                checkout: true
+            })            
+        } else {
+            this.setState({
+                error: 'Select at least one seat'
+            })    
+        }
     }
 
     render() {
@@ -63,11 +70,14 @@ class Reservation extends Component {
         }
 
         if(this.state.checkout) {
-            return <Redirect to={{ pathname: '/checkout', flight: {...this.props.location.flight} }} />
+            return <Redirect to={{ pathname: '/checkout', flight: {...this.props.location.flight}, seats: { ...this.state.seatSelected } }} />
         }
 
         return (
             <div>
+                {
+                    this.state.error ? <span><b>{this.state.error}</b></span> : null
+                }
                 <h1>Seat Reservation System</h1>
                 <DrawGrid
                     seat={this.state.seat}

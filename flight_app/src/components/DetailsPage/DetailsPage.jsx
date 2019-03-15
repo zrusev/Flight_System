@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Table, Button, Modal } from 'react-bootstrap';
 import { } from 'react-bootstrap/ModalHeader';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
 const QRCode = require('qrcode.react');
 
 class DetailsPage extends Component {
@@ -72,20 +72,18 @@ class DetailsPage extends Component {
                         !this.props.flight.flight.flightName
                           ? null
                           :
-                          <>
-                            <Row>
-                                <p><b>MORE INFO HERE</b></p>
-                            </Row>
-                            <Row>
-                                <QRCode value={`https://www.schiphol.nl/en/arrivals/?search=${this.props.flight.flight.flightName}`} />
-                            </Row>
-                            <Row>
-                                <p><b>OR</b></p>
-                            </Row>
-                            <Row>
+                          <Card border="light" className="text-center" style={{ width: '18rem' }}>
+                          <ListGroup variant="flush">
+                            <ListGroup.Item>MORE INFO HERE</ListGroup.Item>
+                            <ListGroup.Item>
+                              <QRCode value={`https://www.schiphol.nl/en/arrivals/?search=${this.props.flight.flight.flightName}`} />
+                            </ListGroup.Item>
+                            <ListGroup.Item>OR</ListGroup.Item>
+                            <ListGroup.Item>
                               <Button variant="primary" size="lg" block onClick={this.handleClick}>BUY</Button>
-                            </Row>
-                          </>
+                            </ListGroup.Item>
+                          </ListGroup>
+                        </Card>
                       }
                     </Col>
                   </Row>

@@ -31,14 +31,13 @@ class DrawGrid extends Component {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            {this.props.seat.map((row) =>
+                                            {this.props.seat.map((row, ind) =>
                                                 <td className={this.props.reserved.indexOf(row) > -1 ? 'reserved' : 'available'}
                                                     key={`seat-${row}`}
                                                     onClick={e => this.onClickSeat(row)}>
                                                     {row} </td>
                                             )}
                                         </tr>
-
                                     </tbody>
                                 </Table>
                             </Col>
@@ -50,7 +49,7 @@ class DrawGrid extends Component {
                         </Row>
                     </Col>
                     <Col md={2}>
-                        <Cart flight={this.props.flight} handleClick={this.props.handleClick} />
+                        <Cart flight={this.props.flight} handleClick={this.props.handleClick} message='Proceed to Checkout' />
                     </Col>
                 </Row>
             </Container>

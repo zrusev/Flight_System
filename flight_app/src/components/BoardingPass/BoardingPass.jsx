@@ -3,12 +3,12 @@ import { Container, Row, Col, Navbar, Table } from 'react-bootstrap';
 
 class BoardingPass extends Component {
     render() {
-        const { passengerName, from, to, date, time, flight, seat, gate, boardTill } = this.props;
-
+        const { destinationName: to, scheduleDate: date, scheduleTime: time, flightName: flight, seat, gate, airlineCode, number } = this.props;
+        const { full_name } = this.props;
         return (
             <Container>
                 <Navbar>
-                    <Navbar.Brand><h5>Ticket</h5></Navbar.Brand>
+                    <Navbar.Brand><h5>Ticket #{number}</h5></Navbar.Brand>
                 </Navbar>
                 <Row className="border">
                     <Col sm={8}>
@@ -22,19 +22,19 @@ class BoardingPass extends Component {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>Passenger Name: {passengerName}</th>
-                                    <th>Date: {date}</th>
-                                    <th>Time: {time}</th>
+                                    <th>Passenger Name: {full_name || 'TBA'}</th>
+                                    <th>Date: {date || 'TBA'}</th>
+                                    <th>Time: {time || 'TBA'}</th>
                                 </tr>
                                 <tr>
-                                    <th>From: {from}</th>
-                                    <th>Flight: {flight}</th>
-                                    <th>Seat: {seat}</th>
+                                    <th>From: Schiphol</th>
+                                    <th>Flight: {flight || 'TBA'}</th>
+                                    <th>Seat: {seat || 'TBA'}</th>
                                 </tr>
                                 <tr>
-                                    <th>To: {to}</th>
-                                    <th>Gate: {gate}</th>
-                                    <th>Boarding Till: {boardTill}</th>
+                                    <th>To: {to || 'TBA'}</th>
+                                    <th>Gate: {gate || 'TBA'}</th>
+                                    <th>Airline Code: {airlineCode || 'TBA'}</th>
                                 </tr>
                                 <tr>
                                     <th colSpan={3}>
@@ -56,27 +56,27 @@ class BoardingPass extends Component {
                             <tbody>
                                 <tr>
                                     <th colSpan={3}>
-                                        Passanger Name: {passengerName}
+                                        Passanger Name: {full_name || 'TBA'}
                                     </th>
                                 </tr>
                                 <tr>
                                     <th colSpan={3}>
-                                        From: {from}
+                                        From: Schiphol
                                     </th>
                                 </tr>
                                 <tr>
                                     <th colSpan={3}>
-                                        To: {to}
+                                        To: {to || 'TBA'}
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th>Date: {date}</th>
-                                    <th>Time: {time}</th>
-                                    <th>Flight: {flight}</th>
+                                    <th>Date: {date || 'TBA'}</th>
+                                    <th>Time: {time || 'TBA'}</th>
+                                    <th>Flight: {flight || 'TBA'}</th>
                                 </tr>
                                 <tr>
-                                    <th>Seat: {seat}</th>
-                                    <th colSpan={2}>Gate: {gate}</th>
+                                    <th>Seat: {seat || 'TBA'}</th>
+                                    <th colSpan={2}>Gate: {gate || 'TBA'}</th>
                                 </tr>
                             </tbody>
                         </Table>
