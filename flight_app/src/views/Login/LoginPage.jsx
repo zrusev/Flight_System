@@ -63,7 +63,6 @@ class Login extends Component {
                 });
                 
             } catch (error) {
-                console.dir(error);
                 this.setState({
                     error: error.message
                 })
