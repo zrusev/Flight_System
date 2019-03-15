@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
 import FlightService from './services/FlightService';
 import { UserProvider, defaultUserState } from './components/contexts/UserContext';
+import AuthorizedRoute from './components/AuthorizedRoute/AuthorizedRoute';
 import HomePage from './views/HomePage/HomePage';
 import Login from './views/Login/LoginPage';
+import Logout from './views/Logout/LogoutPage';
 import NavBarLayout from './components/common/NavBar/NavBarLayout';
 import FooterLayout from './components/common/Footer/FooterLayout';
 import NotFoundPage from './components/common/NotFound/NotFoundPage';
@@ -103,9 +105,10 @@ class App extends Component {
                   departures={departures} 
                   pageLoader={this.loadPage.bind(this)} />}
                   />
-                <Route exact path='/login' render={() => <Login />} />
-                <Route exact path='/boardingpass' render={() => <BoardingPass />} />
-                <Route exact path='/ticket' render={() => <Ticket />} />
+                <Route exact path='/login' component={Login} />
+                <AuthorizedRoute exact path='/logout' component={Logout} />
+                <Route exact path='/boardingpass' component={BoardingPass} />
+                <AuthorizedRoute exact path='/ticket' component={Ticket} allowedRoles={['admin']} />
                 <Route component={NotFoundPage} />
               </Switch>
             </main>
