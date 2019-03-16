@@ -70,6 +70,7 @@ class NavBarLayout extends Component {
                     <Navbar.Brand>Schiphol Airport</Navbar.Brand>
                     <Nav className="mr-auto">
                         <Navbar.Text><NavLink to='/'>INFORMATION</NavLink></Navbar.Text>
+                        <Navbar.Text><NavLink to='/about'>ABOUT</NavLink></Navbar.Text>
                         {
                             isAdmin 
                                 ? <Navbar.Text><NavLink to='/users'>USERS</NavLink></Navbar.Text>
