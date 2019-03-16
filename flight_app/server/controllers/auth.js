@@ -1,11 +1,13 @@
-const { validationResult } = require('express-validator/check');
+const {
+  validationResult
+} = require('express-validator/check');
 const validator = require('validator')
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const encryption = require('../util/encryption');
 const secret = require('secret');
 
-function validateSignupForm (payload) {
+function validateSignupForm(payload) {
   const errors = {}
   let isFormValid = true
   let message = ''
@@ -51,7 +53,7 @@ function validateUser(req, res) {
   return true;
 }
 
-function validateLoginForm (payload) {
+function validateLoginForm(payload) {
   const errors = {}
   let isFormValid = true
   let message = ''
@@ -86,10 +88,14 @@ module.exports = {
         message: validationResult.message,
         errors: validationResult.errors
       })
-    }  
+    }
 
     if (validateUser(req, res)) {
-      const { email, full_name, password } = req.body;
+      const {
+        email,
+        full_name,
+        password
+      } = req.body;
       const salt = encryption.generateSalt();
       const hashedPassword = encryption.generateHashedPassword(salt, password);
       User.create({
@@ -99,13 +105,15 @@ module.exports = {
           salt,
           roles: ['User']
         }).then((user) => {
-          const token = jwt.sign({ email: user.email, userId: user._id.toString() }
-          , secret.get('hashSecret'), {
+          const token = jwt.sign({
+            email: user.email,
+            userId: user._id.toString()
+          }, secret.get('hashSecret'), {
             expiresIn: '1h'
-          });  
+          });
 
           res.status(201)
-            .json({            
+            .json({
               message: 'User created!',
               success: true,
               token,
@@ -139,7 +147,10 @@ module.exports = {
       })
     }
 
-    const { email, password } = req.body;
+    const {
+      email,
+      password
+    } = req.body;
 
     User.findOne({
         email: email
@@ -159,15 +170,17 @@ module.exports = {
           throw error;
         }
 
-        const token = jwt.sign({ email: user.email, userId: user._id.toString() }
-        , secret.get('hashSecret'), {
+        const token = jwt.sign({
+          email: user.email,
+          userId: user._id.toString()
+        }, secret.get('hashSecret'), {
           expiresIn: '1h'
         });
 
         res.status(200).json({
           message: 'User successfully logged in!',
           success: true,
-          token,        
+          token,
           user: {
             id: user._id.toString(),
             email: user.email,
@@ -188,7 +201,11 @@ module.exports = {
       })
   },
   getUsers: (req, res, next) => {
-    User.find({ "email": { "$ne": "admin@admin.com" } })
+    User.find({
+        "email": {
+          "$ne": "admin@admin.com"
+        }
+      })
       .then((users) => {
 
         return res.status(200).json({
@@ -205,5 +222,33 @@ module.exports = {
 
         next(error);
       });
-  }
+  },
+  deleteUser: (req, res, next) => {
+    const userId = req.params.userId;
+
+    User.findById(userId)
+      .then((user) => {
+        if (!user) {
+          const error = new Error('User not found!');
+          error.success = false;
+          error.statusCode = 404;
+          throw error;
+        }
+
+        return User.findByIdAndDelete(userId);
+      })
+      // ToDo: pull from collections
+      .then(() => {
+        res.status(200)
+          .json({
+            message: 'User deleted successfully!',
+            success: true
+          })
+      })
+      .catch((error) => {
+        if (!error.statusCode) {
+          error.statusCode = 500;
+        }
+      });
+  },
 }

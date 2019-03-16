@@ -1,4 +1,4 @@
-import { get } from '../data/crud.js';
+import { get, post } from '../data/crud.js';
 
 class AdminService {
     constructor() {
@@ -8,6 +8,10 @@ class AdminService {
 
     getUsers() {
         return get(`${this.users}`);
+    }
+
+    removeUser(userId) {
+        return post(`${this.users}/delete/${encodeURIComponent(userId)}`);
     }
 
 }

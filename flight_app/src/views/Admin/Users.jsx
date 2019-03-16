@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import Select from 'react-select';
 import AdminService from '../../services/AdminService';
 import { Container, Row, Col, Button } from 'react-bootstrap';
@@ -9,15 +10,46 @@ class Users extends Component {
 
         this.state = {
             users: [],
-            selectedOption: null
+            selectedOption: null,
+            redirectTo: false
         }
+
+        this.handleClick.bind(this);
     }
 
     static service = new AdminService();
 
+    handleClick = () => {
+        const { value: userId } = this.state.selectedOption;
+
+        Users.service.removeUser(userId)
+            .then((result) => {
+                if (!result.success) {
+                    let errors = '';
+                    if (result.message) {
+                        errors = result.message
+                    }
+
+                    if (result.errors) {
+                        errors = Object.values(result.errors).join('');
+                    }
+
+                    throw new Error(errors);
+                }
+
+                this.setState({
+                    redirectTo: true
+                })
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
 
     handleChange = (selectedOption) => {
-        this.setState({ selectedOption });
+        this.setState({
+            selectedOption
+        });
         console.log(`Option selected:`, selectedOption);
     }
 
@@ -47,6 +79,10 @@ class Users extends Component {
     }
 
     render() {
+        if(this.state.redirectTo) {
+            return <Redirect to='/' />
+        }
+
         return (
             <Container>
                 {
@@ -62,7 +98,7 @@ class Users extends Component {
                             <Button block>Edit</Button>
                         </Col>
                         <Col>
-                            <Button block>Remove</Button>
+                            <Button block onClick={() => this.handleClick()}>Remove</Button>
                         </Col>
                     </Row>
                 }
