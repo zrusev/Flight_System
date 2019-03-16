@@ -23,16 +23,32 @@ class CheckOut extends Component {
     checkout = async (event) => {
         event.preventDefault();
 
-        const result = await CheckOut.service.postTicket(this.state); 
-        console.log(result);
+        try {
+            const result = await CheckOut.service.postTicket(this.state);
+             
+            if (!result.success) {
+                let errors = '';
+                if(result.message) {
+                    errors = result.message
+                }
 
-        this.props.location.flight = null;
-        this.setState({
-            userId: '',
-            flightId: '', 
-            flightName: '',
-            seats: []
-        });       
+                if (result.errors) {                       
+                    errors = Object.values(result.errors).join('');                        
+                }
+
+                throw new Error(errors);
+            }
+
+            this.props.location.flight = null;
+            this.setState({
+                userId: '',
+                flightId: '', 
+                flightName: '',
+                seats: []
+            });                   
+        } catch (error) {
+            console.log(error);            
+        }
     }
 
     componentWillMount() {

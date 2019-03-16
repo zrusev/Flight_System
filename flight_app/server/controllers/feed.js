@@ -107,6 +107,37 @@ module.exports = {
         next(error);
       });
   },
+  getSeats: async (req, res, next) => {
+    const { flightId } = req.params;
+
+    try {
+      const flight = await Flight.findOne({ flightId });
+      if (!flight) {
+        res
+          .status(200)
+          .json({
+            message: 'Seats fetched successfully',
+            success: true,
+            seats: []
+          });
+      }      
+
+      res
+        .status(200)
+        .json({
+          message: 'Seats fetched successfully',
+          success: true,
+          seats: flight.reservedSeats
+        });
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+        error.success = false;
+      }
+
+      next(error);
+    }
+  },
   getFlightByName: (req, res, next) => {
     const { searchValue } = req.params;
     
@@ -121,6 +152,13 @@ module.exports = {
       })
       .then((data) => data.json())
       .then((fetchedflight) => {
+        if(!fetchedflight.flights) {
+          const error = new Error(fetchedflight.description);
+          error.statusCode = fetchedflight.code;
+          error.success = false;
+          throw error;
+        }
+
         const flight = fetchedflight.flights[0];
 
         let destination = null;
@@ -135,6 +173,7 @@ module.exports = {
           .status(200)
           .json({
             message: 'Fetched flight successfully.',
+            success: true,
             flight
           });
       })
@@ -196,7 +235,7 @@ module.exports = {
         const user = await User.findById(userId);
         let flight;
         flight = await Flight.findOne({ flightId, flightName });
-        
+        debugger
         if(!flight) {
           flight = new Flight({
             flightId,

@@ -5,8 +5,8 @@ import AuthenticationService from '../../services/AuthenticationService';
 import { UserConsumer } from '../../components/contexts/UserContext';
 
 class Login extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             email: '',

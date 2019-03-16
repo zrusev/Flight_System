@@ -5,6 +5,7 @@ const isAuth = require('../middleware/is-auth');
 
 router.get('/flights/page/:page/direction/:direction', feedController.getFlights);
 router.get('/flights/flightName/:searchValue', feedController.getFlightByName);
+router.get('/flights/flightId/:flightId', feedController.getSeats);
 router.get('/flights/:id/codeshares/:flightName', feedController.getFlightById);
 
 router.post('/tickets/create', isAuth, feedController.createTicket);

@@ -32,12 +32,25 @@ class NavBarLayout extends Component {
         event.preventDefault();
         
         try {
-            const flight = await NavBarLayout.service.getFlightByName(this.state.searchValue);
+            const result = await NavBarLayout.service.getFlightByName(this.state.searchValue);
+            
+            if(!result.success) {
+                let errors = '';
+                if(result.message) {
+                    errors = result.message
+                }
+
+                if (result.errors) {                       
+                    errors = Object.values(result.errors).join('');                        
+                }
+
+                throw new Error(errors);
+            }
             
             this.setState({
-                flight,
+                flight: result,
                 modalShow: true
-            })
+            });
         } catch (error) {
             console.dir(error);            
         }

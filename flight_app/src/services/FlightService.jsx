@@ -19,6 +19,10 @@ class FlightService {
         return get(`${this.allFlights}/flightName/${encodeURIComponent(searchValue)}`);
     }
 
+    getSeats(flightId) {
+        return get(`${this.allFlights}/flightId/${encodeURIComponent(flightId)}`);
+    }
+
     postTicket(details) {
         return post(`${this.allTickets}/create`, details);
     }

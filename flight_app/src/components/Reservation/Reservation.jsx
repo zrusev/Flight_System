@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import {} from './Reservation.css';
 import DrawGrid from './DrawGrid';
+import FlightService from '../../services/FlightService';
 
 class Reservation extends Component {
     constructor(props) {
@@ -17,16 +18,35 @@ class Reservation extends Component {
                 'Middle4', 'Middle5', 'Middle6',
                 'Back1', 'Back2', 'Back3'
             ],
-            seatAvailable: [
-                'Front2', 'Front3',
-                'Front4', 'Front5', 'Front6',
-                'Middle1', 'Middle2', 
-                'Middle3', 'Middle4', 
-                'Back1', 'Back2', 'Back3'
-            ],
-            seatReserved: ['Front1', 'Middle3'],
-            seatBought: ['Front1', 'Middle3'],
+            seatAvailable: [],
+            seatReserved: [],
+            seatBought: [],
             seatSelected: []
+        }
+    }
+
+    static service = new FlightService();
+
+    async componentWillMount() {
+        if (this.props.location.flight) {
+            const { id: flightId } = this.props.location.flight;
+
+            try {
+                const result = await Reservation.service.getSeats(flightId);                
+                const reservedSeats = result.seats;
+                const seatAvailable = reservedSeats.length !== 0 
+                    ? this.state.seat.filter((s) => !reservedSeats.includes(s))
+                    : []
+
+                this.setState({
+                    seatReserved: reservedSeats,
+                    seatBought: reservedSeats,
+                    seatAvailable 
+                })
+                
+            } catch (error) {
+                console.log(error);                
+            }
         }
     }
 
