@@ -147,48 +147,47 @@ module.exports = {
     // Validate post using express-validator
     // Return 422 with errors array if something went wrong
     if (validatePost(req, res)) {
-      const {
-        flightId,
-        userId,
-        price
-      } = req.body;
+      const { userId, flightId, flightName, seats } = req.body;
 
       // Create the ticket in DB and return 201 status code with a message and the ticket itself with the user
       try {
         const user = await User.findById(userId);
-
-        const flightDetails = await
-        fetch(`${baseURL}/flights/${flightId}${encodeQueryString(getProps(req))}`, {
-            headers: {
-              "ResourceVersion": "v3"
-            }
+        let flight;
+        flight = await Flight.findOne({ flightId, flightName });
+        
+        if(!flight) {
+          flight = new Flight({
+            flightId,
+            flightName
           })
-          .then((data) => data.json());
+        }
 
-        const flight = new Flight({
-          id: flightDetails.id
-        })
-
+        seats.map((seat) => flight.reservedSeats.push(seat));
+        await flight.save();
+     
         const barcode = barcodeNum();
+        
+        let ticket;
+        seats.map(async (seat) => {
+          ticket = new Ticket({
+            flight,
+            user,
+            barcode,
+            seats: seat
+          });
+          
+          await ticket.save();
 
-        const ticket = new Ticket({
-          flight,
-          user,
-          price,
-          barcode
-        });
-
-        await ticket.save();
-
-        user.flights.push(flight);
-        user.tickets.push(ticket);
-        await user.save();
+          user.flights.push(flight);
+          user.tickets.push(ticket);
+          await user.save();
+        })
 
         res
           .status(201)
           .json({
             message: 'Ticket created successfully!',
-            ticket: ticket,
+            success: true,
             user: {
               userId: userId,
               full_name: user.full_name
@@ -236,83 +235,83 @@ module.exports = {
     //     }
     //   });
   },
-  deletePost: (req, res, next) => {
-    const postId = req.params.postId;
+  // deletePost: (req, res, next) => {
+  //   const postId = req.params.postId;
 
-    Post.findById(postId)
-      .then((post) => {
-        if (!post) {
-          const error = new Error('Post not found!');
-          error.statusCode = 404;
-          throw error;
-        }
+  //   Post.findById(postId)
+  //     .then((post) => {
+  //       if (!post) {
+  //         const error = new Error('Post not found!');
+  //         error.statusCode = 404;
+  //         throw error;
+  //       }
 
-        if (post.creator.toString() !== req.userId) {
-          const error = new Error('Unauthorized');
-          error.statusCode = 403;
-          throw error;
-        }
+  //       if (post.creator.toString() !== req.userId) {
+  //         const error = new Error('Unauthorized');
+  //         error.statusCode = 403;
+  //         throw error;
+  //       }
 
-        return Post.findByIdAndDelete(postId);
-      })
-      .then(() => {
-        return User.findById(req.userId);
-      })
-      .then((user) => {
-        user.posts.pull(postId);
-        return user.save();
-      })
-      .then(() => {
-        res.status(200)
-          .json({
-            message: 'Post deleted successfully!'
-          })
-      })
-      .catch((error) => {
-        if (!error.statusCode) {
-          error.statusCode = 500;
-        }
-      });
-  },
-  updatePost: (req, res) => {
-    // Validate post using express-validator
-    // Return 422 with errors array if something went wrong
-    if (validatePost(req, res)) {
-      const postId = req.params.postId;
-      const post = req.body;
+  //       return Post.findByIdAndDelete(postId);
+  //     })
+  //     .then(() => {
+  //       return User.findById(req.userId);
+  //     })
+  //     .then((user) => {
+  //       user.posts.pull(postId);
+  //       return user.save();
+  //     })
+  //     .then(() => {
+  //       res.status(200)
+  //         .json({
+  //           message: 'Post deleted successfully!'
+  //         })
+  //     })
+  //     .catch((error) => {
+  //       if (!error.statusCode) {
+  //         error.statusCode = 500;
+  //       }
+  //     });
+  // },
+  // updatePost: (req, res) => {
+  //   // Validate post using express-validator
+  //   // Return 422 with errors array if something went wrong
+  //   if (validatePost(req, res)) {
+  //     const postId = req.params.postId;
+  //     const post = req.body;
 
-      Post.findById(postId)
-        .then((p) => {
-          if (!p) {
-            const error = new Error('Post not found');
-            error.statusCode = 404;
-            throw error;
-          }
+  //     Post.findById(postId)
+  //       .then((p) => {
+  //         if (!p) {
+  //           const error = new Error('Post not found');
+  //           error.statusCode = 404;
+  //           throw error;
+  //         }
 
-          if (p.creator.toString() !== req.userId) {
-            const error = new Error('Unauthorized');
-            error.statusCode = 403;
-            throw error;
-          }
+  //         if (p.creator.toString() !== req.userId) {
+  //           const error = new Error('Unauthorized');
+  //           error.statusCode = 403;
+  //           throw error;
+  //         }
 
-          p.title = post.title;
-          p.content = post.content;
+  //         p.title = post.title;
+  //         p.content = post.content;
 
-          return p.save();
-        })
-        .then((p) => {
-          if (p) {
-            res.status(200).json({
-              message: 'Post updated!',
-              post: p
-            })
-          }
-        })
-        .catch((error) => {
-          if (!error.statusCode) {
-            error.statusCode = 500;
-          }
-        });
-    }
-  }
+  //         return p.save();
+  //       })
+  //       .then((p) => {
+  //         if (p) {
+  //           res.status(200).json({
+  //             message: 'Post updated!',
+  //             post: p
+  //           })
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         if (!error.statusCode) {
+  //           error.statusCode = 500;
+  //         }
+  //       });
+  //   }
+  // }
 }

@@ -4,6 +4,7 @@ class FlightService {
     constructor() {
         this.serverBaseURL = 'http://localhost:9999/feed';
         this.allFlights = `${this.serverBaseURL}/flights`;
+        this.allTickets = `${this.serverBaseURL}/tickets`
     }
 
     getAllFlights(page, direction) {
@@ -14,8 +15,8 @@ class FlightService {
         return get(`${this.allFlights}/${encodeURIComponent(id)}/codeshares/${encodeURIComponent(flightName)}`);
     }
 
-    postTicket(flightId,userId) {
-        return post(``);
+    postTicket(details) {
+        return post(`${this.allTickets}/create`, details);
     }
 }
 

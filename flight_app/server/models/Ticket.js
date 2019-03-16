@@ -12,13 +12,13 @@ const ticketSchema = new Schema({
     ref: 'User',
     required: true
   },
-  price: {
-    type: Number,
-    required: true
-  },
   barcode: {
       type: Schema.Types.String
-  }
+  },
+  seats: [{
+    type: Schema.Types.String,
+    required: true
+  }]
 });
 
 module.exports = mongoose.model('Ticket', ticketSchema);

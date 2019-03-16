@@ -11,31 +11,42 @@ class CheckOut extends Component {
         super(props);
 
         this.state = {
-            seats: [],
+            userId: '',
             flightId: '', 
             flightName: '',
-            userId: ''
+            seats: []
         }
     }
 
     static service = new FlightService();
 
-    checkout = (event) => {
+    checkout = async (event) => {
         event.preventDefault();
 
-        //Pass state to service       
+        const result = await CheckOut.service.postTicket(this.state); 
+        console.log(result);
+
+        this.props.location.flight = null;
+        this.setState({
+            userId: '',
+            flightId: '', 
+            flightName: '',
+            seats: []
+        });       
     }
 
     componentWillMount() {
-        const { id, flightName } = this.props.location.flight;
-        const userId = this.props.userId;
-
-        this.setState({
-            seats: Object.values(this.props.location.seats),
-            flightId: id, 
-            flightName: flightName,
-            userId
-        })
+        if (this.props.location.flight) {            
+            const { id, flightName } = this.props.location.flight;
+            const userId = this.props.userId;
+            
+            this.setState({
+                seats: Object.values(this.props.location.seats),
+                flightId: id, 
+                flightName: flightName,
+                userId
+            })
+        }
     }
 
     render() {
