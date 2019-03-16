@@ -15,6 +15,10 @@ class FlightService {
         return get(`${this.allFlights}/${encodeURIComponent(id)}/codeshares/${encodeURIComponent(flightName)}`);
     }
 
+    getFlightByName(searchValue) {
+        return get(`${this.allFlights}/flightName/${encodeURIComponent(searchValue)}`);
+    }
+
     postTicket(details) {
         return post(`${this.allTickets}/create`, details);
     }

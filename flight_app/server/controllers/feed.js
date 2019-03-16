@@ -32,13 +32,11 @@ function encodeQueryString(params) {
     ""
 }
 
-function getProps(page, direction) {
+function getProps(details) {
   return Object.assign({
-    "flightdirection": direction,
-    "page": page,
     "sort": "scheduletime",
     "includedelays": "false"
-  }, {
+  }, details, {
     app_id: secret.get('app_id')
   }, {
     app_key: secret.get('app_key')
@@ -53,7 +51,12 @@ module.exports = {
   getFlights: (req, res, next) => {
     const { page, direction } = req.params;
 
-    fetch(`${baseURL}/flights${encodeQueryString(getProps(page, direction))}`, {
+    const details = {
+      "flightdirection": direction,
+      "page": page
+    }
+
+    fetch(`${baseURL}/flights${encodeQueryString(getProps(details))}`, {
         headers: {
           "ResourceVersion": "v3"
         }
@@ -94,6 +97,45 @@ module.exports = {
             message: 'Fetched flights successfully.',
             flights: flights.parsed,
             link: links
+          });
+      })
+      .catch((error) => {
+        if (!error.statusCode) {
+          error.statusCode = 500;
+        }
+
+        next(error);
+      });
+  },
+  getFlightByName: (req, res, next) => {
+    const { searchValue } = req.params;
+    
+    const details = {
+      "flightname": searchValue
+    }
+    
+    fetch(`${baseURL}/flights${encodeQueryString(getProps(details))}`, {
+        headers: {
+          "ResourceVersion": "v3"
+        }
+      })
+      .then((data) => data.json())
+      .then((fetchedflight) => {
+        const flight = fetchedflight.flights[0];
+
+        let destination = null;
+
+        if(flight.route) { 
+          const route = flight.route.destinations[0];
+          destination = airports.findWhere({ iata: route }).get('city');
+        }
+        flight['destinationName'] = destination;
+        
+        res
+          .status(200)
+          .json({
+            message: 'Fetched flight successfully.',
+            flight
           });
       })
       .catch((error) => {

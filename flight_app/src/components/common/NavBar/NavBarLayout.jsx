@@ -2,8 +2,47 @@ import React, { Component } from 'react';
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { UserConsumer } from '../../contexts/UserContext';
+import FlightSerice from '../../../services/FlightService';
+import DetailsPage from '../../DetailsPage/DetailsPage';
 
 class NavBarLayout extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            searchValue: '',
+            flight: null,
+            modalShow: false
+        }
+    }
+
+    static service = new FlightSerice();
+
+    modalClose = () => this.setState({ 
+        modalShow: false
+    });
+    
+    handleChange = ({ target }) => {
+        this.setState({
+            [target.name]: target.value
+        })
+    }
+
+    handleSubmit = async (event) => {
+        event.preventDefault();
+        
+        try {
+            const flight = await NavBarLayout.service.getFlightByName(this.state.searchValue);
+            
+            this.setState({
+                flight,
+                modalShow: true
+            })
+        } catch (error) {
+            console.dir(error);            
+        }
+    }
+
     render() {
         const { isLoggedIn, full_name } = this.props;
         return (
@@ -35,12 +74,22 @@ class NavBarLayout extends Component {
                                 : null
                         }                        
                     </Navbar.Collapse>
-                    <Form inline>
-                        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                        <Button variant="outline-info">Search flight</Button>
+                    <Form inline onSubmit={this.handleSubmit}>
+                        <FormControl 
+                            type="text" 
+                            placeholder="Search" 
+                            className="mr-sm-2" 
+                            name="searchValue" 
+                            onChange={this.handleChange} />
+                        <Button variant="outline-info" type="submit">Search flight</Button>
                     </Form>
                 </Navbar>
                 <br />
+                <DetailsPage 
+                    show={this.state.modalShow}
+                    flight={this.state.flight}
+                    onHide={this.modalClose.bind(this)}
+                />
             </header>
         )
     }

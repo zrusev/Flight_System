@@ -6,7 +6,7 @@ import DrawGrid from './DrawGrid';
 class Reservation extends Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             checkout: false,
             error: '',

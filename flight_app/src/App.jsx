@@ -101,9 +101,9 @@ class App extends Component {
               <Switch>
                 <Route exact path='/' render={() => 
                   <HomePage 
-                  arrivals={arrivals} 
-                  departures={departures} 
-                  pageLoader={this.loadPage.bind(this)} />}
+                    arrivals={arrivals} 
+                    departures={departures} 
+                    pageLoader={this.loadPage.bind(this)} />}
                   />
                 <Route exact path='/login' component={Login} />
                 <AuthorizedRoute exact path='/logout' component={Logout} />

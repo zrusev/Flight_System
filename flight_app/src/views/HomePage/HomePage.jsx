@@ -24,12 +24,20 @@ class HomePage extends Component {
         <Row>
           <Col offset={3} sm={6}>
           {
-            <Flight flights={arrivals.flights} pageLoader={pageLoader} pagination={arrivals.pagination} section={Object.keys(this.props)[0]} />
+            <Flight 
+              flights={arrivals.flights} 
+              pageLoader={pageLoader} 
+              pagination={arrivals.pagination} 
+              section={Object.keys(this.props)[0]} />
           }
           </Col>
           <Col offset={3} sm={6}>
           {
-            <Flight flights={departures.flights} pageLoader={pageLoader} pagination={departures.pagination} section={Object.keys(this.props)[1]} />
+            <Flight 
+              flights={departures.flights} 
+              pageLoader={pageLoader} 
+              pagination={departures.pagination} 
+              section={Object.keys(this.props)[1]} />
           }            
           </Col>
         </Row>

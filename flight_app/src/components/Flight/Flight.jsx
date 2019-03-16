@@ -22,13 +22,17 @@ class Flight extends Component {
     });
 
     modalOpen = (id, flightName) => { 
-        App.service.getFlightByIdName(id, flightName)
-        .then((flight) => {
-          this.setState({
-            flight,
-            modalShow: true
-          })
-        })
+        try {
+            App.service.getFlightByIdName(id, flightName)
+                .then((flight) => {
+                    this.setState({
+                        flight,
+                        modalShow: true
+                    })
+            });         
+        } catch (error) {
+            console.dir(error);            
+        }
     };
 
     handleClick = (e) => {
