@@ -89,7 +89,7 @@ module.exports = {
     }  
 
     if (validateUser(req, res)) {
-      const { email, password, full_name } = req.body;
+      const { email, full_name, password } = req.body;
       const salt = encryption.generateSalt();
       const hashedPassword = encryption.generateHashedPassword(salt, password);
       User.create({
@@ -99,10 +99,16 @@ module.exports = {
           salt,
           roles: ['User']
         }).then((user) => {
+          const token = jwt.sign({ email: user.email, userId: user._id.toString() }
+          , secret.get('hashSecret'), {
+            expiresIn: '1h'
+          });  
+
           res.status(201)
             .json({            
               message: 'User created!',
               success: true,
+              token,
               user: {
                 id: user._id.toString(),
                 email: user.email,

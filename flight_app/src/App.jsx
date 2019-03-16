@@ -6,6 +6,7 @@ import AuthorizedRoute from './components/AuthorizedRoute/AuthorizedRoute';
 import HomePage from './views/HomePage/HomePage';
 import Login from './views/Login/LoginPage';
 import Logout from './views/Logout/LogoutPage';
+import SignUp from './views/SignUp/SignUp';
 import NavBarLayout from './components/common/NavBar/NavBarLayout';
 import FooterLayout from './components/common/Footer/FooterLayout';
 import NotFoundPage from './components/common/NotFound/NotFoundPage';
@@ -106,6 +107,7 @@ class App extends Component {
                     pageLoader={this.loadPage.bind(this)} />}
                   />
                 <Route exact path='/login' component={Login} />
+                <Route exact path='/signup' component={SignUp} />
                 <AuthorizedRoute exact path='/logout' component={Logout} />
                 <AuthorizedRoute exact path='/reservation' component={Reservation} allowedRoles={['admin', 'user']} />
                 <AuthorizedRoute exact path='/checkout' component={CheckOut} />
