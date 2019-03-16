@@ -186,5 +186,24 @@ module.exports = {
 
         next(error);
       })
+  },
+  getUsers: (req, res, next) => {
+    User.find({ "email": { "$ne": "admin@admin.com" } })
+      .then((users) => {
+
+        return res.status(200).json({
+          message: 'Users successfully fetched!',
+          success: true,
+          users: users
+        });
+      })
+      .catch(error => {
+        if (!error.statusCode) {
+          error.statusCode = 500;
+          error.success = false;
+        }
+
+        next(error);
+      });
   }
 }

@@ -7,6 +7,7 @@ import HomePage from './views/HomePage/HomePage';
 import Login from './views/Login/LoginPage';
 import Logout from './views/Logout/LogoutPage';
 import SignUp from './views/SignUp/SignUp';
+import Users from './views/Admin/Users';
 import NavBarLayout from './components/common/NavBar/NavBarLayout';
 import FooterLayout from './components/common/Footer/FooterLayout';
 import NotFoundPage from './components/common/NotFound/NotFoundPage';
@@ -111,6 +112,7 @@ class App extends Component {
                 <AuthorizedRoute exact path='/logout' component={Logout} />
                 <AuthorizedRoute exact path='/reservation' component={Reservation} allowedRoles={['admin', 'user']} />
                 <AuthorizedRoute exact path='/checkout' component={CheckOut} />
+                <AuthorizedRoute exact path='/users' component={Users} allowedRoles={['admin']} />                
                 <Route component={NotFoundPage} />
               </Switch>
             </main>

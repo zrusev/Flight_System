@@ -28,5 +28,6 @@ router.post('/signup',
   ]
 , authController.signUp);
 router.post('/signin', authController.signIn);
+router.get('/users', authController.getUsers);
 
 module.exports = router;

@@ -56,8 +56,13 @@ class Login extends Component {
                     isLoggedIn: true,
                 }));
 
+                const isAdmin = result.user.roles
+                    .map(role => role.toLowerCase())
+                    .some(role => ['admin'].includes(role));
+
                 updateUser({
                     isLoggedIn: true,
+                    isAdmin,
                     updateUser,
                     ...result.user
                 });

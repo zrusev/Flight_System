@@ -4,6 +4,7 @@ const defaultUserState = {
     roles: [],
     full_name: '',
     isLoggedIn: false,
+    isAdmin: false,
     updateUser() {}
 }
 

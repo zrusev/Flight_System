@@ -57,7 +57,8 @@ class NavBarLayout extends Component {
     }
 
     render() {
-        const { isLoggedIn, full_name } = this.props;
+        const { isLoggedIn, full_name, isAdmin } = this.props;
+        
         return (
             <header>
                 <link rel="stylesheet"
@@ -69,6 +70,11 @@ class NavBarLayout extends Component {
                     <Navbar.Brand>Schiphol Airport</Navbar.Brand>
                     <Nav className="mr-auto">
                         <Navbar.Text><NavLink to='/'>INFORMATION</NavLink></Navbar.Text>
+                        {
+                            isAdmin 
+                                ? <Navbar.Text><NavLink to='/users'>USERS</NavLink></Navbar.Text>
+                                : null
+                        }
                         {
                             !isLoggedIn
                                 ? <Navbar.Text><NavLink to='/signup'>SIGN UP</NavLink></Navbar.Text>
@@ -112,11 +118,12 @@ const NavBarLayoutWithProps = (props) => {
     return (
         <UserConsumer>
             {
-                ({isLoggedIn, full_name}) => (
+                ({isLoggedIn, full_name, isAdmin}) => (
                     <NavBarLayout 
                         {...props} 
                         isLoggedIn={isLoggedIn} 
                         full_name={full_name} 
+                        isAdmin={isAdmin}
                     />
                 )
             }

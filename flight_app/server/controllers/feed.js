@@ -235,7 +235,7 @@ module.exports = {
         const user = await User.findById(userId);
         let flight;
         flight = await Flight.findOne({ flightId, flightName });
-        debugger
+        
         if(!flight) {
           flight = new Flight({
             flightId,
