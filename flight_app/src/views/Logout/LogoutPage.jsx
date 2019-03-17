@@ -8,7 +8,11 @@ class Logout extends Component {
 
         window.localStorage.removeItem('user');
         window.localStorage.removeItem('auth_token');
-        props.updateUser(defaultUserState);
+        
+        const defaultState = defaultUserState;
+        defaultState.updateUser = props.updater;
+        
+        props.updateUser(defaultState);
     }
 
     render() {
@@ -21,7 +25,9 @@ const LogoutWithContext = (props) => {
         <UserConsumer>
             {
                 ({updateUser}) => (                    
-                    <Logout {...props} updateUser={updateUser} />
+                    <Logout {...props} 
+                            updateUser={updateUser} 
+                    />
                 )   
             }
         </UserConsumer>

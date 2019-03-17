@@ -111,7 +111,10 @@ class App extends Component {
                 <Route exact path='/login' component={Login} />
                 <Route exact path='/signup' component={SignUp} />
                 <Route exact path='/about' component={About} />
-                <AuthorizedRoute exact path='/logout' component={Logout} />
+                <AuthorizedRoute exact path='/logout' render={() => 
+                  <Logout 
+                    updater={this.updateUser.bind(this)} 
+                  />} />
                 <AuthorizedRoute exact path='/reservation' component={Reservation} allowedRoles={['admin', 'user']} />
                 <AuthorizedRoute exact path='/checkout' component={CheckOut} />
                 <AuthorizedRoute exact path='/users' component={Users} allowedRoles={['admin']} />                
