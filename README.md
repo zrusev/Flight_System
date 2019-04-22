@@ -6,3 +6,17 @@ Using [ReactJS](https://reactjs.org/) on client's side and [ExpressJS](https://e
 The administrative part of the system allows the administrator to modify or remove already bought tickets.
 
 Server included in repository.
+
+[Application Structure:]
+-   [public part (accessible without authentication)]
+-	[private part (available for registered users) and]	
+-	[administrative part (available for administrators only)]
+
+[Application implementations:]
+- [Google Maps API]
+- [Authentication and user roles]
+- [Cient-side routing]
+- [Cient-side routing]
+- [Stateless and state full components, bound forms, synthetic events, etc.]
+- [Error handling and data validation]
+
