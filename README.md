@@ -12,10 +12,9 @@ Server included in repository.
 -	[private part (available for registered users) and]	
 -	[administrative part (available for administrators only)]
 
-[Application implementations:]
+[Application Implementation:]
 - [Google Maps API]
 - [Authentication and user roles]
-- [Cient-side routing]
 - [Cient-side routing]
 - [Stateless and state full components, bound forms, synthetic events, etc.]
 - [Error handling and data validation]
